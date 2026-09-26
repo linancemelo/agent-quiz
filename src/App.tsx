@@ -34,7 +34,7 @@ export default function App() {
   }, [hydrate])
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/agent-quiz">
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<LearningMapPage />} />
