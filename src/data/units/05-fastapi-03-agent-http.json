@@ -1,0 +1,125 @@
+{
+  "id": "05-fastapi-03-agent-http",
+  "moduleId": "05-fastapi-pydantic",
+  "title": "Agent 包成 HTTP 服務",
+  "order": 3,
+  "summary": "Pydantic 驗證 → Depends 注入 graph → invoke／resume。",
+  "sourceNote": "05-fastapi-pydantic/03-agent-as-http-service.md",
+  "tags": [
+    "fastapi",
+    "http",
+    "deploy"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n對外暴露穩定 JSON API：驗證 → 注入 graph → 回應。\n\n## 重點\n- Request／Response model 分離；驗證失敗 422\n- lifespan 建立 checkpointer／graph，不要每個請求 compile\n- HITL：POST /run 可能 interrupt；POST /resume 同 thread_id\n- 多副本：InMemorySaver 不行\n- Tracing：LANGSMITH_TRACING=true 等；ENDPOINT 勿尾隨斜線\n"
+  },
+  "questions": [
+    {
+      "id": "f3-1",
+      "type": "boolean",
+      "prompt": "每個 HTTP 請求都重新 compile() graph 是建議作法。",
+      "answer": false,
+      "explanation": "不要在每個請求 compile()。應在 lifespan 建立。",
+      "sourceNote": "05-fastapi-pydantic/03-agent-as-http-service.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "f3-2",
+      "type": "single",
+      "prompt": "請求驗證失敗時 FastAPI 通常回？",
+      "answer": "c",
+      "explanation": "驗證失敗自動 422。",
+      "sourceNote": "05-fastapi-pydantic/03-agent-as-http-service.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "200"
+        },
+        {
+          "id": "b",
+          "label": "301"
+        },
+        {
+          "id": "c",
+          "label": "422"
+        },
+        {
+          "id": "d",
+          "label": "100"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "f3-3",
+      "type": "fill",
+      "prompt": "開啟 LangSmith 追蹤的環境變數名？（現行）",
+      "answer": [
+        "LANGSMITH_TRACING"
+      ],
+      "explanation": "LANGSMITH_TRACING=true（現行官方 quickstart）。",
+      "sourceNote": "05-fastapi-pydantic/03-agent-as-http-service.md",
+      "placeholder": "LANGSMITH_TRACING",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "f3-4",
+      "type": "multi",
+      "prompt": "多副本部署 HITL 時要注意？",
+      "answer": [
+        "a",
+        "c"
+      ],
+      "explanation": "InMemorySaver 不行；需 Sqlite／Postgres。thread 需能在共享儲存恢復。",
+      "sourceNote": "05-fastapi-pydantic/03-agent-as-http-service.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "不要用 InMemorySaver"
+        },
+        {
+          "id": "b",
+          "label": "每個 replica 各自 InMemory 就好"
+        },
+        {
+          "id": "c",
+          "label": "用持久化 checkpointer"
+        },
+        {
+          "id": "d",
+          "label": "拿掉 thread_id"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "f3-5",
+      "type": "scenario",
+      "prompt": "LANGSMITH_ENDPOINT 多了尾隨 / 可能？",
+      "answer": "b",
+      "explanation": "勿尾隨斜線，否則可能認證失敗。",
+      "sourceNote": "05-fastapi-pydantic/03-agent-as-http-service.md",
+      "context": "tracing 一直認證失敗。",
+      "options": [
+        {
+          "id": "a",
+          "label": "更快"
+        },
+        {
+          "id": "b",
+          "label": "可能認證失敗"
+        },
+        {
+          "id": "c",
+          "label": "自動修正"
+        },
+        {
+          "id": "d",
+          "label": "改用 cosine"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "id": "projects-01-rag-tools",
+  "moduleId": "projects",
+  "title": "專案一：RAG + Tool Calling",
+  "order": 1,
+  "summary": "查自有文件又能呼叫時間／計算機工具的 MVP。",
+  "sourceNote": "projects/01-rag-tools/README.md",
+  "tags": [
+    "project",
+    "rag",
+    "tools"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n做出能「查自有文件（RAG）」又能「呼叫至少一個外部工具」的 Agent。\n\n## 架構\ncreate_agent → search_knowledge（Retriever）／now_in_taipei／calculator\n\n## 驗收重點\n- 使用 create_agent + @tool（勿用 create_react_agent）\n- 文件答案有來源感；未知要承認\n- RecursiveCharacterTextSplitter + InMemoryVectorStore（可選 Chroma）\n"
+  },
+  "questions": [
+    {
+      "id": "p1-1",
+      "type": "boolean",
+      "prompt": "本專案主路徑應使用 create_react_agent。",
+      "answer": false,
+      "explanation": "本專案 API 約定：主路徑必須是 create_agent + @tool；勿用 create_react_agent。",
+      "sourceNote": "projects/01-rag-tools/README.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p1-2",
+      "type": "single",
+      "prompt": "ingest 資料流順序？",
+      "answer": "b",
+      "explanation": "原始檔 → RecursiveCharacterTextSplitter → Embeddings → VectorStore.add_documents。",
+      "sourceNote": "projects/01-rag-tools/README.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "先 LLM 再切塊"
+        },
+        {
+          "id": "b",
+          "label": "切塊 → Embeddings → add_documents"
+        },
+        {
+          "id": "c",
+          "label": "先 resume 再 interrupt"
+        },
+        {
+          "id": "d",
+          "label": "只 copy 檔案到 prompt"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p1-3",
+      "type": "fill",
+      "prompt": "知識庫語意搜尋工具在範例中的名稱？",
+      "answer": [
+        "search_knowledge"
+      ],
+      "explanation": "search_knowledge tool 做語意搜尋並回傳片段與來源檔名。",
+      "sourceNote": "projects/01-rag-tools/README.md",
+      "placeholder": "search_knowledge",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p1-4",
+      "type": "multi",
+      "prompt": "驗收清單包含？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "文件有來源、未知承認、時間／計算機工具、create_agent+@tool。亂編答案不符合。",
+      "sourceNote": "projects/01-rag-tools/README.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "文件問題答案有來源感"
+        },
+        {
+          "id": "b",
+          "label": "未知內容承認不足"
+        },
+        {
+          "id": "c",
+          "label": "使用 create_agent + @tool"
+        },
+        {
+          "id": "d",
+          "label": "文件沒寫的也能硬編"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p1-5",
+      "type": "scenario",
+      "prompt": "模型從不呼叫 search_knowledge，可能原因？",
+      "answer": "c",
+      "explanation": "除錯表：不呼叫 tool → system prompt 太弱、工具描述差。應強化 docstring 並明令先搜尋。",
+      "sourceNote": "projects/01-rag-tools/README.md",
+      "context": "答案開始胡謅。",
+      "options": [
+        {
+          "id": "a",
+          "label": "向量維度太美"
+        },
+        {
+          "id": "b",
+          "label": "一定是 FastAPI 問題"
+        },
+        {
+          "id": "c",
+          "label": "prompt／docstring 太弱"
+        },
+        {
+          "id": "d",
+          "label": "必須改用 create_react_agent"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "p1-6",
+      "type": "boolean",
+      "prompt": "calculator 範例用 eval 僅供 MVP，生產應改安全解析。",
+      "answer": true,
+      "explanation": "除錯表：eval 僅供 MVP；生產應換成 ast 安全運算或外部函式庫。",
+      "sourceNote": "projects/01-rag-tools/README.md",
+      "difficulty": "beginner"
+    }
+  ]
+}

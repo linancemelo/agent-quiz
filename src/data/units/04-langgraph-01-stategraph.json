@@ -1,0 +1,141 @@
+{
+  "id": "04-langgraph-01-stategraph",
+  "moduleId": "04-langgraph",
+  "title": "StateGraph 與狀態基礎",
+  "order": 1,
+  "summary": "有狀態流程圖：節點回傳部分更新，邊決定下一步。",
+  "sourceNote": "04-langgraph/01-stategraph-basics.md",
+  "tags": [
+    "langgraph",
+    "state",
+    "reducer"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 StateGraph 把 Agent 流程建成有狀態的流程圖。\n\n## 重點\n- 必須 `.compile()` 才能 invoke\n- State schema 首選 TypedDict；create_agent 不支援 Pydantic state\n- 建議用 START／END\n- 預設 reducer 是覆蓋；累加用 Annotated[..., reducer]\n- 清空合併欄位要用 Overwrite([])，回傳 [] 不會清空\n- MessagesState 預建 add_messages\n- recursion_limit 預設自 v1.0.6 起為 1000\n"
+  },
+  "questions": [
+    {
+      "id": "g1-1",
+      "type": "boolean",
+      "prompt": "StateGraph 的 builder 可以直接 invoke，不必 compile。",
+      "answer": false,
+      "explanation": "必須 graph = builder.compile(...) 才可 invoke／stream。",
+      "sourceNote": "04-langgraph/01-stategraph-basics.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "g1-2",
+      "type": "single",
+      "prompt": "LangGraph 文件對 state schema 的首選是？",
+      "answer": "a",
+      "explanation": "文件明寫首選 TypedDict；dataclass 適合要預設值；Pydantic 較慢且 create_agent 不支援。",
+      "sourceNote": "04-langgraph/01-stategraph-basics.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "TypedDict"
+        },
+        {
+          "id": "b",
+          "label": "任意 dict 無型別"
+        },
+        {
+          "id": "c",
+          "label": "必須用 Pydantic"
+        },
+        {
+          "id": "d",
+          "label": "CSV schema"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "g1-3",
+      "type": "fill",
+      "prompt": "清空 merging reducer 欄位應使用的型別／輔助名？",
+      "answer": [
+        "Overwrite",
+        "Overwrite([])"
+      ],
+      "explanation": "回傳 [] 不會清空；要用 from langgraph.types import Overwrite → {\"errors\": Overwrite([])}。",
+      "sourceNote": "04-langgraph/01-stategraph-basics.md",
+      "placeholder": "Overwrite",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "g1-4",
+      "type": "multi",
+      "prompt": "關於 reducer，哪些正確？",
+      "answer": [
+        "a",
+        "c"
+      ],
+      "explanation": "預設覆蓋；累加用 Annotated + reducer（如 operator.add、add_messages）。空 list 對 merging reducer 是合併不是清空。",
+      "sourceNote": "04-langgraph/01-stategraph-basics.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "預設 reducer 是覆蓋"
+        },
+        {
+          "id": "b",
+          "label": "回傳 [] 一定會清空合併欄位"
+        },
+        {
+          "id": "c",
+          "label": "messages 常用 add_messages"
+        },
+        {
+          "id": "d",
+          "label": "每個 key 共用同一個全域 reducer"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "g1-5",
+      "type": "scenario",
+      "prompt": "有 checkpointer 時 resume／retry 會從哪裡重跑？",
+      "answer": "b",
+      "explanation": "節點冪等：resume／retry 會從該節點開頭重跑，不是從 interrupt 那一行繼續。",
+      "sourceNote": "04-langgraph/01-stategraph-basics.md",
+      "context": "你在 interrupt 前寄了一封信。",
+      "options": [
+        {
+          "id": "a",
+          "label": "從 interrupt 那一行精確繼續"
+        },
+        {
+          "id": "b",
+          "label": "從該節點開頭重跑"
+        },
+        {
+          "id": "c",
+          "label": "從頭刪光所有 checkpoint"
+        },
+        {
+          "id": "d",
+          "label": "自動換成 END"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "g1-6",
+      "type": "code",
+      "prompt": "現代語法：從 langgraph.graph import StateGraph, START, ___",
+      "answer": [
+        "END"
+      ],
+      "explanation": "建議 add_edge(START, \"node\")、add_edge(\"node\", END)。",
+      "sourceNote": "04-langgraph/01-stategraph-basics.md",
+      "language": "python",
+      "starter": "from langgraph.graph import StateGraph, START, ",
+      "match": "normalize_whitespace",
+      "runner": "string",
+      "difficulty": "beginner"
+    }
+  ]
+}

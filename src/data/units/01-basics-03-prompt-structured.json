@@ -1,0 +1,126 @@
+{
+  "id": "01-basics-03-prompt-structured",
+  "moduleId": "01-basics",
+  "title": "提示與結構化輸出",
+  "order": 3,
+  "summary": "角色提示 + Pydantic schema，讓模型交可驗證的作業。",
+  "sourceNote": "01-basics/03-prompt-structured-output.md",
+  "tags": [
+    "structured-output",
+    "pydantic",
+    "create_agent"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n用清楚角色提示 + Pydantic schema，讓模型輸出可驗證、可程式消費的資料。\n\n## 兩層 API\n1. **模型層**：`ChatOpenAI.with_structured_output(Schema, method=\"json_schema\", strict=True)`\n2. **Agent 層**：`create_agent(..., response_format=YourModel)` → `result[\"structured_response\"]`\n\n## 重點\n- method 預設取向為 `json_schema`。\n- `strict=True` 強制符合 schema。\n- JSON Schema dict 必須包在 ProviderStrategy／ToolStrategy 裡，不能裸傳。\n- v1 改進：結構化輸出併入主迴圈，減少多打一輪 LLM。\n"
+  },
+  "questions": [
+    {
+      "id": "b3-1",
+      "type": "single",
+      "prompt": "create_agent 使用 response_format 後，結構化結果通常在哪個鍵？",
+      "answer": "c",
+      "explanation": "最終狀態鍵：`structured_response`（不是自己 parse 最後一句話）。",
+      "sourceNote": "01-basics/03-prompt-structured-output.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "final_answer"
+        },
+        {
+          "id": "b",
+          "label": "json"
+        },
+        {
+          "id": "c",
+          "label": "structured_response"
+        },
+        {
+          "id": "d",
+          "label": "output_text"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b3-2",
+      "type": "boolean",
+      "prompt": "只要在提示裡寫「請只回 JSON」，就等同於綁定了 provider 原生 structured output。",
+      "answer": false,
+      "explanation": "常見坑：提示說「回 JSON」卻沒綁 schema → 偶發多字、缺欄。Provider 原生 structured output 比口頭約束可靠。",
+      "sourceNote": "01-basics/03-prompt-structured-output.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b3-3",
+      "type": "fill",
+      "prompt": "with_structured_output 現行預設取向的 method 名稱是？（填 json_schema）",
+      "answer": [
+        "json_schema"
+      ],
+      "explanation": "method：'json_schema'｜'function_calling'｜'json_mode'；現行預設取向為 json_schema。",
+      "sourceNote": "01-basics/03-prompt-structured-output.md",
+      "placeholder": "json_schema",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "b3-4",
+      "type": "multi",
+      "prompt": "create_agent 的 response_format 可以怎麼傳？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "直接傳 Pydantic／TypedDict／dataclass；也可明示 ProviderStrategy／ToolStrategy。JSON Schema dict 必須包在 strategy 裡，不能裸傳。",
+      "sourceNote": "01-basics/03-prompt-structured-output.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "直接傳 Pydantic model"
+        },
+        {
+          "id": "b",
+          "label": "ProviderStrategy(Schema)"
+        },
+        {
+          "id": "c",
+          "label": "ToolStrategy(Schema)"
+        },
+        {
+          "id": "d",
+          "label": "裸傳 JSON Schema dict（不包 strategy）"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "b3-5",
+      "type": "scenario",
+      "prompt": "strict=True 卻一直 API 報錯，最可能原因是？",
+      "answer": "a",
+      "explanation": "常見坑：strict=True + 不合法 JSON Schema → API 報錯。schema 須滿足 provider 限制（如常需 additionalProperties: false）。",
+      "sourceNote": "01-basics/03-prompt-structured-output.md",
+      "context": "你剛打開 with_structured_output(..., strict=True)。",
+      "options": [
+        {
+          "id": "a",
+          "label": "JSON Schema 不符合 provider 限制"
+        },
+        {
+          "id": "b",
+          "label": "電腦沒開機"
+        },
+        {
+          "id": "c",
+          "label": "必須用繁體中文提示"
+        },
+        {
+          "id": "d",
+          "label": "只能用 temperature=2"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}

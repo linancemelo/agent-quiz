@@ -1,0 +1,135 @@
+{
+  "id": "02-langchain-03-agents-basics",
+  "moduleId": "02-langchain",
+  "title": "Agents 基礎 create_agent",
+  "order": 3,
+  "summary": "Model + Harness：標準 Agent 迴圈。",
+  "sourceNote": "02-langchain/03-agents-basics.md",
+  "tags": [
+    "create_agent",
+    "middleware",
+    "checkpointer"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 LangChain 1.x 的 `create_agent` 建立「模型 + 工具 + 提示」的標準 Agent harness。\n\n## 公式\n**Agent = Model + Harness**（提示、工具、middleware、記憶、結構化輸出）\n\n## 重點\n- 最小：model=、tools=、可選 system_prompt=\n- 多輪：checkpointer + config thread_id\n- response_format → structured_response\n- Middleware：before_model／after_model／wrap_model_call／wrap_tool_call\n- context_schema + context= 傳不可變上下文（如 user_id）\n"
+  },
+  "questions": [
+    {
+      "id": "l3-1",
+      "type": "single",
+      "prompt": "官方 Agents 頁把 Agent 定義成？",
+      "answer": "b",
+      "explanation": "官方：Agent = Model + Harness。",
+      "sourceNote": "02-langchain/03-agents-basics.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "Model + Database"
+        },
+        {
+          "id": "b",
+          "label": "Model + Harness"
+        },
+        {
+          "id": "c",
+          "label": "Prompt + Regex"
+        },
+        {
+          "id": "d",
+          "label": "Docker + CUDA"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l3-2",
+      "type": "boolean",
+      "prompt": "想要多輪記憶，只要 create_agent 有 tools 就夠了，不必 checkpointer。",
+      "answer": false,
+      "explanation": "常見坑：期望多輪記憶卻沒設 checkpointer／thread_id。",
+      "sourceNote": "02-langchain/03-agents-basics.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l3-3",
+      "type": "fill",
+      "prompt": "多輪對話 config 裡 configurable 的鍵名是？",
+      "answer": [
+        "thread_id"
+      ],
+      "explanation": "invoke 時帶 config={\"configurable\":{\"thread_id\":...}}。",
+      "sourceNote": "02-langchain/03-agents-basics.md",
+      "placeholder": "thread_id",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l3-4",
+      "type": "multi",
+      "prompt": "下列哪些是 v1 middleware 鉤子？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "Middleware 含 before_model／after_model／wrap_model_call／wrap_tool_call 等。after_docker 不是。",
+      "sourceNote": "02-langchain/03-agents-basics.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "before_model"
+        },
+        {
+          "id": "b",
+          "label": "wrap_tool_call"
+        },
+        {
+          "id": "c",
+          "label": "after_model"
+        },
+        {
+          "id": "d",
+          "label": "after_docker"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "l3-5",
+      "type": "scenario",
+      "prompt": "要用 response_format 拿結構化最終答案，結果在哪裡讀？",
+      "answer": "c",
+      "explanation": "response_format=YourPydanticModel → result[\"structured_response\"]。",
+      "sourceNote": "02-langchain/03-agents-basics.md",
+      "context": "你剛 invoke 完 agent。",
+      "options": [
+        {
+          "id": "a",
+          "label": "result[\"messages\"][0]"
+        },
+        {
+          "id": "b",
+          "label": "result[\"content\"]"
+        },
+        {
+          "id": "c",
+          "label": "result[\"structured_response\"]"
+        },
+        {
+          "id": "d",
+          "label": "環境變數 STRUCTURED"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l3-6",
+      "type": "boolean",
+      "prompt": "context_schema 的 context 與 thread_id 是同一件事。",
+      "answer": false,
+      "explanation": "thread_id 管對話續聊；context 管每輪注入的 user_id 等——兩者分工。",
+      "sourceNote": "02-langchain/03-agents-basics.md",
+      "difficulty": "intermediate"
+    }
+  ]
+}

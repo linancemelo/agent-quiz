@@ -1,0 +1,126 @@
+{
+  "id": "07-advanced-02-tools-advanced",
+  "moduleId": "07-advanced",
+  "title": "工具設計與進階控制流",
+  "order": 2,
+  "summary": "Command、Send、interrupt、@task、RetryPolicy。",
+  "sourceNote": "07-advanced/02-tools-advanced.md",
+  "tags": [
+    "tools",
+    "Send",
+    "fault-tolerance"
+  ],
+  "difficulty": "advanced",
+  "lesson": {
+    "markdown": "## 一句話目標\n把工具當 Agent 的手：結構化參數、錯誤回饋、並行、Command／Send、HITL。\n\n## 重點\n- 工具回 Command 時 messages 須含對應 ToolMessage\n- 條件邊回傳 list[Send] 做動態並行\n- @task 讓部分工作在 resume 時跳過重算\n- recursion_limit；RemainingSteps 主動降級\n- RetryPolicy／timeout／error_handler（langgraph≥1.2）\n"
+  },
+  "questions": [
+    {
+      "id": "a2-1",
+      "type": "boolean",
+      "prompt": "從 tool 回傳 Command 更新 messages 時，可以省略對應的 ToolMessage。",
+      "answer": false,
+      "explanation": "從 tool 回 Command 時，messages 更新必須含對應 ToolMessage。",
+      "sourceNote": "07-advanced/02-tools-advanced.md",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "a2-2",
+      "type": "single",
+      "prompt": "resume 時想跳過已完成的副作用重算，可用？",
+      "answer": "b",
+      "explanation": "可用 @task（langgraph.func.task）讓部分工作在 resume 時從 checkpoint 還原、跳過重算。",
+      "sourceNote": "07-advanced/02-tools-advanced.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "time.sleep"
+        },
+        {
+          "id": "b",
+          "label": "@task"
+        },
+        {
+          "id": "c",
+          "label": "刪掉 checkpointer"
+        },
+        {
+          "id": "d",
+          "label": "print"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "a2-3",
+      "type": "fill",
+      "prompt": "限制圖遞迴步數的 config 鍵名？",
+      "answer": [
+        "recursion_limit"
+      ],
+      "explanation": "config={\"recursion_limit\": N}（不要放进 configurable）。",
+      "sourceNote": "07-advanced/02-tools-advanced.md",
+      "placeholder": "recursion_limit",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "a2-4",
+      "type": "multi",
+      "prompt": "工具設計常見坑？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "schema 不清、吞掉例外、與 reducer 衝突、無限迴圈。清楚的 docstring 是好事。",
+      "sourceNote": "07-advanced/02-tools-advanced.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "docstring／schema 不清"
+        },
+        {
+          "id": "b",
+          "label": "吞掉例外只回 error"
+        },
+        {
+          "id": "c",
+          "label": "無限 tool 迴圈"
+        },
+        {
+          "id": "d",
+          "label": "用 Pydantic 定義參數"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "a2-5",
+      "type": "scenario",
+      "prompt": "Command(goto=sends) 跨版本不穩時，筆記建議？",
+      "answer": "c",
+      "explanation": "優先條件邊回傳 list[Send]。",
+      "sourceNote": "07-advanced/02-tools-advanced.md",
+      "context": "map-reduce 扇出。",
+      "options": [
+        {
+          "id": "a",
+          "label": "放棄並行"
+        },
+        {
+          "id": "b",
+          "label": "只用固定邊"
+        },
+        {
+          "id": "c",
+          "label": "條件邊回傳 list[Send]"
+        },
+        {
+          "id": "d",
+          "label": "改用 eval"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}

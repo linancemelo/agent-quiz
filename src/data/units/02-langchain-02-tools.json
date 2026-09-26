@@ -1,0 +1,136 @@
+{
+  "id": "02-langchain-02-tools",
+  "moduleId": "02-langchain",
+  "title": "Tools（工具）",
+  "order": 2,
+  "summary": "@tool 把函式變成模型可呼叫的動作。",
+  "sourceNote": "02-langchain/02-tools.md",
+  "tags": [
+    "tools",
+    "ToolRuntime",
+    "schema"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 `@tool` 把 Python 函式變成模型可呼叫的動作，並正確處理 schema 與執行期上下文。\n\n## 重點\n- 函式名→工具名，docstring→描述，type hints→輸入 schema；建議 snake_case\n- 保留參數名：`config`、`runtime` 不可當一般工具參數\n- 存取上下文：`runtime: ToolRuntime`（讀 state／store／context）\n- 舊 InjectedState／InjectedStore → 改 ToolRuntime\n- `return_direct=True` 可跳過再推理\n- 錯誤用 middleware `wrap_tool_call` 轉成可讀 ToolMessage\n"
+  },
+  "questions": [
+    {
+      "id": "l2-1",
+      "type": "boolean",
+      "prompt": "工具參數可以命名為 config 或 runtime，模型會正常看到這些參數。",
+      "answer": false,
+      "explanation": "保留參數名 config、runtime 不可當一般工具參數（會 runtime error）。",
+      "sourceNote": "02-langchain/02-tools.md",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "l2-2",
+      "type": "single",
+      "prompt": "讀取 Agent 執行期上下文（state／store）的現行建議作法是？",
+      "answer": "c",
+      "explanation": "官方建議改用 ToolRuntime；舊 InjectedState／InjectedStore／get_runtime() 應遷移。",
+      "sourceNote": "02-langchain/02-tools.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "繼續用 InjectedState 當主路徑"
+        },
+        {
+          "id": "b",
+          "label": "把 state 寫進全域變數"
+        },
+        {
+          "id": "c",
+          "label": "簽名加 runtime: ToolRuntime"
+        },
+        {
+          "id": "d",
+          "label": "用 print 除錯偷看"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l2-3",
+      "type": "fill",
+      "prompt": "裝飾器名稱是？（含 @）",
+      "answer": [
+        "@tool",
+        "tool"
+      ],
+      "explanation": "@tool：函式名→工具名，docstring→描述，type hints→輸入 schema。",
+      "sourceNote": "02-langchain/02-tools.md",
+      "placeholder": "@tool",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l2-4",
+      "type": "multi",
+      "prompt": "工具回傳可以是？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "回傳 str／物件→ToolMessage；Command(update=...)→改 state；return_direct=True→跳過再推理。不能「什麼都不回卻期望模型知道」。",
+      "sourceNote": "02-langchain/02-tools.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "字串或物件（變 ToolMessage）"
+        },
+        {
+          "id": "b",
+          "label": "Command(update={...})"
+        },
+        {
+          "id": "c",
+          "label": "搭配 return_direct=True"
+        },
+        {
+          "id": "d",
+          "label": "完全不回傳任何東西且不報錯（當正常）"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "l2-5",
+      "type": "scenario",
+      "prompt": "工具拋例外直接炸掉整個 agent。筆記建議怎麼處理？",
+      "answer": "a",
+      "explanation": "錯誤處理：用 middleware wrap_tool_call 把例外轉成可讀 ToolMessage，而非炸整個 agent。",
+      "sourceNote": "02-langchain/02-tools.md",
+      "context": "生產環境工具偶發失敗。",
+      "options": [
+        {
+          "id": "a",
+          "label": "用 wrap_tool_call middleware 轉成可讀 ToolMessage"
+        },
+        {
+          "id": "b",
+          "label": "忽略錯誤繼續"
+        },
+        {
+          "id": "c",
+          "label": "把例外印在終端機就好"
+        },
+        {
+          "id": "d",
+          "label": "關掉所有工具"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "l2-6",
+      "type": "boolean",
+      "prompt": "工具名建議使用 snake_case。",
+      "answer": true,
+      "explanation": "官方建議 snake_case 工具名；含空白或奇怪符號部分 provider 不吃。",
+      "sourceNote": "02-langchain/02-tools.md",
+      "difficulty": "beginner"
+    }
+  ]
+}

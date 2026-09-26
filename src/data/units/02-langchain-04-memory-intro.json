@@ -1,0 +1,127 @@
+{
+  "id": "02-langchain-04-memory-intro",
+  "moduleId": "02-langchain",
+  "title": "記憶入門",
+  "order": 4,
+  "summary": "短期 checkpointer × 長期 store，分清楚。",
+  "sourceNote": "02-langchain/04-memory-intro.md",
+  "tags": [
+    "memory",
+    "checkpointer",
+    "store"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n分清「同一段對話的短期記憶」與「跨對話的長期記憶」。\n\n## 對照\n- **短期（thread）**：checkpointer + thread_id\n- **長期（cross-thread）**：store（namespace + key），工具用 runtime.store\n\n## 重點\n- 短期：InMemorySaver；生產：PostgresSaver／RedisSaver／MongoDBSaver\n- 長期：InMemoryStore／PostgresStore\n- 長對話：trim_messages、SummarizationMiddleware\n- 換 thread 還記得偏好 → 那是 store 的工作\n"
+  },
+  "questions": [
+    {
+      "id": "l4-1",
+      "type": "single",
+      "prompt": "跨對話記住「使用者偏好」主要靠？",
+      "answer": "c",
+      "explanation": "長期記憶靠 store；checkpointer 是短期／thread 內。",
+      "sourceNote": "02-langchain/04-memory-intro.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "只靠更大的 context window"
+        },
+        {
+          "id": "b",
+          "label": "只靠 checkpointer"
+        },
+        {
+          "id": "c",
+          "label": "store（長期記憶）"
+        },
+        {
+          "id": "d",
+          "label": "把偏好寫進檔名"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l4-2",
+      "type": "boolean",
+      "prompt": "換了一個新 thread_id 後，checkpointer 仍會自動帶上舊對話的全部 messages。",
+      "answer": false,
+      "explanation": "短期記憶綁 thread_id；換 thread 短期歷史清空。跨 thread 靠 store。",
+      "sourceNote": "02-langchain/04-memory-intro.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l4-3",
+      "type": "fill",
+      "prompt": "開發用短期記憶類別名？（InMemory...）",
+      "answer": [
+        "InMemorySaver",
+        "MemorySaver"
+      ],
+      "explanation": "Short-term：InMemorySaver；MemorySaver 在部分版本為別名。",
+      "sourceNote": "02-langchain/04-memory-intro.md",
+      "placeholder": "InMemorySaver",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l4-4",
+      "type": "multi",
+      "prompt": "生產級 checkpointer 例子包含？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "生產例：PostgresSaver、RedisSaver、MongoDBSaver。只靠瀏覽器 cookie 不是。",
+      "sourceNote": "02-langchain/04-memory-intro.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "PostgresSaver"
+        },
+        {
+          "id": "b",
+          "label": "RedisSaver"
+        },
+        {
+          "id": "c",
+          "label": "MongoDBSaver"
+        },
+        {
+          "id": "d",
+          "label": "BrowserCookieSaver（筆記所列）"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "l4-5",
+      "type": "scenario",
+      "prompt": "有 checkpointer 但每次亂換 thread_id，使用者感覺？",
+      "answer": "a",
+      "explanation": "常見坑：有 checkpointer 但每次亂換 thread_id → 看起來「沒記憶」。",
+      "sourceNote": "02-langchain/04-memory-intro.md",
+      "context": "客訴：機器人每句都失憶。",
+      "options": [
+        {
+          "id": "a",
+          "label": "像沒有記憶"
+        },
+        {
+          "id": "b",
+          "label": "記憶會自動合併所有 thread"
+        },
+        {
+          "id": "c",
+          "label": "費用變少"
+        },
+        {
+          "id": "d",
+          "label": "自動升級成 large embedding"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

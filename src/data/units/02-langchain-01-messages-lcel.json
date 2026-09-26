@@ -1,0 +1,142 @@
+{
+  "id": "02-langchain-01-messages-lcel",
+  "moduleId": "02-langchain",
+  "title": "Messages 與 LCEL",
+  "order": 1,
+  "summary": "標準 Message + Runnable 管線：提示 → 模型 → 解析。",
+  "sourceNote": "02-langchain/01-messages-lcel.md",
+  "tags": [
+    "messages",
+    "lcel",
+    "runnable"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n用標準 Message 類型組對話，並用 Runnable（LCEL）把「提示 → 模型 → 解析」串成可复用管線。\n\n## 重點\n- 訊息：`SystemMessage`／`HumanMessage`／`AIMessage`／`ToolMessage`\n- LCEL：`prompt | model | parser`，支援 invoke／batch／stream\n- v1 `content_blocks`：text、reasoning、tool_call、多模態等\n- VectorStore **不是** Runnable；`as_retriever()` 才是\n- `init_chat_model(\"provider:model\")` 統一初始化\n"
+  },
+  "questions": [
+    {
+      "id": "l1-1",
+      "type": "single",
+      "prompt": "下列哪個不是 LangChain 標準訊息類型？",
+      "answer": "d",
+      "explanation": "訊息類型含 SystemMessage、HumanMessage、AIMessage、ToolMessage。UserMessage 不是框架標準類名（dict 可用 role:user）。",
+      "sourceNote": "02-langchain/01-messages-lcel.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "SystemMessage"
+        },
+        {
+          "id": "b",
+          "label": "HumanMessage"
+        },
+        {
+          "id": "c",
+          "label": "ToolMessage"
+        },
+        {
+          "id": "d",
+          "label": "UserMessage（作為框架類名）"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l1-2",
+      "type": "boolean",
+      "prompt": "InMemoryVectorStore 本身可以直接用 | 接到 LCEL 管線。",
+      "answer": false,
+      "explanation": "VectorStore 本身不是 Runnable；as_retriever() 才是。",
+      "sourceNote": "02-langchain/01-messages-lcel.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l1-3",
+      "type": "multi",
+      "prompt": "content_blocks 文件列出的核心 type 包含哪些？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "核心 type 含 text、reasoning、tool_call、多模態 image／audio 等。database 不是 content_blocks type。",
+      "sourceNote": "02-langchain/01-messages-lcel.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "text"
+        },
+        {
+          "id": "b",
+          "label": "reasoning"
+        },
+        {
+          "id": "c",
+          "label": "tool_call"
+        },
+        {
+          "id": "d",
+          "label": "database"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "l1-4",
+      "type": "fill",
+      "prompt": "統一初始化聊天模型的函式名是？（init_...）",
+      "answer": [
+        "init_chat_model"
+      ],
+      "explanation": "init_chat_model(\"provider:model\") 統一初始化。",
+      "sourceNote": "02-langchain/01-messages-lcel.md",
+      "placeholder": "init_chat_model",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l1-5",
+      "type": "code",
+      "prompt": "LCEL 串接寫法：chain = prompt ___ model（填運算子）",
+      "answer": [
+        "|",
+        "prompt | model"
+      ],
+      "explanation": "LCEL 本質是 Runnable 可組合：prompt | model | parser。",
+      "sourceNote": "02-langchain/01-messages-lcel.md",
+      "language": "python",
+      "starter": "chain = prompt  model",
+      "match": "normalize_whitespace",
+      "runner": "string",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "l1-6",
+      "type": "scenario",
+      "prompt": "ToolMessage.tool_call_id 與 AIMessage.tool_calls[].id 對不上會怎樣？",
+      "answer": "b",
+      "explanation": "常見坑：ToolMessage.tool_call_id 與 AIMessage.tool_calls[].id 對不上會導致下一輪行為異常。",
+      "sourceNote": "02-langchain/01-messages-lcel.md",
+      "context": "Agent loop 第二輪開始胡言亂語。",
+      "options": [
+        {
+          "id": "a",
+          "label": "完全沒影響"
+        },
+        {
+          "id": "b",
+          "label": "下一輪模型行為可能異常"
+        },
+        {
+          "id": "c",
+          "label": "自動換成 cosine 距離"
+        },
+        {
+          "id": "d",
+          "label": "會改用 Responses API"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}

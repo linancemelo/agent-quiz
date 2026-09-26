@@ -1,0 +1,125 @@
+{
+  "id": "03-rag-02-embeddings",
+  "moduleId": "03-rag",
+  "title": "Embedding（嵌入）",
+  "order": 2,
+  "summary": "文字 → 同一向量空間；查詢與索引要用同一個模型。",
+  "sourceNote": "03-rag/02-embeddings.md",
+  "tags": [
+    "embeddings",
+    "openai",
+    "rag"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n把 chunk 與查詢變成同一向量空間的數字，讓意思接近的文字在幾何上靠近。\n\n## 重點\n- 介面：embed_documents／embed_query；亦可用 init_embeddings\n- small=1536、large=3072；Max input 8192 tokens\n- 建議距離：cosine\n- 索引用 A、查詢用 B → 空間不一致，結果無意義\n"
+  },
+  "questions": [
+    {
+      "id": "r2-1",
+      "type": "boolean",
+      "prompt": "索引用 text-embedding-3-large、查詢用 small，結果仍然可靠。",
+      "answer": false,
+      "explanation": "索引用 A、查詢用 B → 空間不一致，結果無意義。必須同一個 embedding 模型。",
+      "sourceNote": "03-rag/02-embeddings.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r2-2",
+      "type": "single",
+      "prompt": "text-embedding-3-large 預設維度？",
+      "answer": "c",
+      "explanation": "large 預設 3072 維。",
+      "sourceNote": "03-rag/02-embeddings.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "512"
+        },
+        {
+          "id": "b",
+          "label": "1536"
+        },
+        {
+          "id": "c",
+          "label": "3072"
+        },
+        {
+          "id": "d",
+          "label": "8192"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r2-3",
+      "type": "fill",
+      "prompt": "單一輸入大約的 Max input tokens？（填數字）",
+      "answer": [
+        "8192"
+      ],
+      "explanation": "Max input ≈ 8192 tokens。",
+      "sourceNote": "03-rag/02-embeddings.md",
+      "placeholder": "8192",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "r2-4",
+      "type": "multi",
+      "prompt": "LangChain Embeddings 介面主要方法有？",
+      "answer": [
+        "a",
+        "b"
+      ],
+      "explanation": "embed_documents(list[str])、embed_query(str)。embed_database／embed_gpu 不是介面方法。",
+      "sourceNote": "03-rag/02-embeddings.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "embed_documents"
+        },
+        {
+          "id": "b",
+          "label": "embed_query"
+        },
+        {
+          "id": "c",
+          "label": "embed_database"
+        },
+        {
+          "id": "d",
+          "label": "embed_gpu"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r2-5",
+      "type": "scenario",
+      "prompt": "手動截斷向量維度後忘了做什麼？",
+      "answer": "b",
+      "explanation": "官方提醒：手動截斷維度需再 L2 normalize；建議用 API dimensions 參數而非事後截斷。",
+      "sourceNote": "03-rag/02-embeddings.md",
+      "context": "你把 3072 維手動切成 1024。",
+      "options": [
+        {
+          "id": "a",
+          "label": "改檔名"
+        },
+        {
+          "id": "b",
+          "label": "L2 normalize"
+        },
+        {
+          "id": "c",
+          "label": "改用 regex"
+        },
+        {
+          "id": "d",
+          "label": "重開機"
+        }
+      ],
+      "difficulty": "advanced"
+    }
+  ]
+}

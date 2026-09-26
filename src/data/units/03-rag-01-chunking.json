@@ -1,0 +1,125 @@
+{
+  "id": "03-rag-01-chunking",
+  "moduleId": "03-rag",
+  "title": "文件與切塊",
+  "order": 1,
+  "summary": "載入 → chunks → 再嵌入。切壞後面救不回。",
+  "sourceNote": "03-rag/01-chunking.md",
+  "tags": [
+    "rag",
+    "chunking",
+    "splitter"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n把原始文件變成大小合適、帶 metadata 的 Document 區塊。\n\n## 重點\n- Document：page_content + metadata + 可選 id\n- 建議：`RecursiveCharacterTextSplitter`（langchain-text-splitters）\n- 教學常用：chunk_size=1000、chunk_overlap=200、add_start_index=True\n- 程式碼可用 from_language(Language.PYTHON)\n"
+  },
+  "questions": [
+    {
+      "id": "r1-1",
+      "type": "single",
+      "prompt": "官方建議的通用文字切塊器是？",
+      "answer": "b",
+      "explanation": "RecursiveCharacterTextSplitter 被寫成 recommended text splitter for generic text。",
+      "sourceNote": "03-rag/01-chunking.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "RandomEmojiSplitter"
+        },
+        {
+          "id": "b",
+          "label": "RecursiveCharacterTextSplitter"
+        },
+        {
+          "id": "c",
+          "label": "OnePageOneChunkOnly"
+        },
+        {
+          "id": "d",
+          "label": "CSVRowMerger"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r1-2",
+      "type": "boolean",
+      "prompt": "chunk_overlap=0 通常是最佳實務，可最大化資訊密度。",
+      "answer": false,
+      "explanation": "常見坑：overlap=0 → 邊界資訊遺失。教學常用 overlap=200。",
+      "sourceNote": "03-rag/01-chunking.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r1-3",
+      "type": "fill",
+      "prompt": "教學常用的 chunk_size 數值是？（填數字）",
+      "answer": [
+        "1000"
+      ],
+      "explanation": "教學常用參數：chunk_size=1000、chunk_overlap=200。",
+      "sourceNote": "03-rag/01-chunking.md",
+      "placeholder": "1000",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r1-4",
+      "type": "multi",
+      "prompt": "Document 通常包含？",
+      "answer": [
+        "a",
+        "b"
+      ],
+      "explanation": "Document：page_content + metadata + 可選 id。embedding 向量是之後才產生，不是 Document 必填欄。",
+      "sourceNote": "03-rag/01-chunking.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "page_content"
+        },
+        {
+          "id": "b",
+          "label": "metadata"
+        },
+        {
+          "id": "c",
+          "label": "必須預先含 embedding 向量"
+        },
+        {
+          "id": "d",
+          "label": "必須含 GPU 型號"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r1-5",
+      "type": "scenario",
+      "prompt": "切完不留 source／頁碼，最大問題是？",
+      "answer": "c",
+      "explanation": "常見坑：切完不留 source／頁碼 → 無法引用。metadata 讓答案可追溯。",
+      "sourceNote": "03-rag/01-chunking.md",
+      "context": "老闆要你標註答案出處。",
+      "options": [
+        {
+          "id": "a",
+          "label": "embedding 會變彩色"
+        },
+        {
+          "id": "b",
+          "label": "模型會自動知道來源"
+        },
+        {
+          "id": "c",
+          "label": "無法追溯／引用來源"
+        },
+        {
+          "id": "d",
+          "label": "chunk_size 會自動變 0"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

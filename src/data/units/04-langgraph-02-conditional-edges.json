@@ -1,0 +1,125 @@
+{
+  "id": "04-langgraph-02-conditional-edges",
+  "moduleId": "04-langgraph",
+  "title": "條件邊、Send、Command",
+  "order": 2,
+  "summary": "動態路由、map-reduce 扇出、狀態更新+導向合一。",
+  "sourceNote": "04-langgraph/02-conditional-edges-command.md",
+  "tags": [
+    "edges",
+    "Send",
+    "Command"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n用條件邊、Send、Command 做動態路由與並行扇出。\n\n## 重點\n- add_conditional_edges(source, routing_fn, path_map?)\n- 每個節點對下一站：固定邊 **或** 條件邊／Command 擇一\n- Command(goto=...) 不會取消靜態邊——混用會雙路徑並行\n- Send：條件邊回傳 list[Send] 做 map-reduce\n- Command 回傳須標 Literal[...] 供繪圖／靜態分析\n- 多輪續聊傳普通 dict，勿用單獨 Command(update=) 當新訊息\n"
+  },
+  "questions": [
+    {
+      "id": "g2-1",
+      "type": "boolean",
+      "prompt": "同時 add_edge(\"a\",\"b\") 又在 a 回傳 Command(goto=\"c\")，則只有 c 會跑。",
+      "answer": false,
+      "explanation": "官方警告：Command(goto=...) 只加動態邊，不會取消靜態邊 → b 與 c 都會跑。",
+      "sourceNote": "04-langgraph/02-conditional-edges-command.md",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "g2-2",
+      "type": "single",
+      "prompt": "動態扇出（map-reduce）穩妥寫法是？",
+      "answer": "b",
+      "explanation": "經典寫法：條件邊回傳 list[Send]；比 Command(goto=sends) 更穩妥跨版本。",
+      "sourceNote": "04-langgraph/02-conditional-edges-command.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "用 for 迴圈手動 invoke 子行程"
+        },
+        {
+          "id": "b",
+          "label": "條件邊回傳 list[Send]"
+        },
+        {
+          "id": "c",
+          "label": "把所有 items 塞進一個字串"
+        },
+        {
+          "id": "d",
+          "label": "只用 END"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "g2-3",
+      "type": "fill",
+      "prompt": "把狀態更新與路由合在同一個回傳值的型別名？",
+      "answer": [
+        "Command"
+      ],
+      "explanation": "Command(update=..., goto=..., resume=..., graph=...)",
+      "sourceNote": "04-langgraph/02-conditional-edges-command.md",
+      "placeholder": "Command",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "g2-4",
+      "type": "multi",
+      "prompt": "關於多輪續聊，哪些正確？",
+      "answer": [
+        "a",
+        "c"
+      ],
+      "explanation": "同一 thread_id 傳普通 dict 從 __start__ 再進。勿用單獨 Command(update={...}) 當新訊息。",
+      "sourceNote": "04-langgraph/02-conditional-edges-command.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "續聊應傳普通 dict 輸入"
+        },
+        {
+          "id": "b",
+          "label": "應用單獨 Command(update=) 當新使用者訊息"
+        },
+        {
+          "id": "c",
+          "label": "需同一 thread_id"
+        },
+        {
+          "id": "d",
+          "label": "必須每次換新 thread_id"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "g2-5",
+      "type": "scenario",
+      "prompt": "回傳 Command 卻沒標 Literal 目的地，後果？",
+      "answer": "a",
+      "explanation": "型別標註：-> Command[Literal[\"next_a\", \"next_b\"]]，否則繪圖／靜態分析不知道可達節點。",
+      "sourceNote": "04-langgraph/02-conditional-edges-command.md",
+      "context": "圖渲染看起來缺邊。",
+      "options": [
+        {
+          "id": "a",
+          "label": "圖渲染與靜態檢查不完整"
+        },
+        {
+          "id": "b",
+          "label": "自動變快兩倍"
+        },
+        {
+          "id": "c",
+          "label": "強制改用 Pydantic state"
+        },
+        {
+          "id": "d",
+          "label": "Send 會失效"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}

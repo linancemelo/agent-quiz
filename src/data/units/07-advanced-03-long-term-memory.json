@@ -1,0 +1,125 @@
+{
+  "id": "07-advanced-03-long-term-memory",
+  "moduleId": "07-advanced",
+  "title": "長期記憶 Store",
+  "order": 3,
+  "summary": "Checkpoint＝分頁工作階段；Store＝帳戶檔案。",
+  "sourceNote": "07-advanced/03-long-term-memory.md",
+  "tags": [
+    "store",
+    "memory",
+    "namespace"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 Store 跨 thread 保存使用者偏好與事實。\n\n## 重點\n- put(namespace, key, value: dict)；get／search\n- Namespace 常見 (user_id, \"memories\")；search 是前綴匹配\n- 生產：PostgresStore／MongoDBStore／RedisStore…\n- InMemoryStore 僅開發\n- search 排序跨後端可能不一致 → client-side sort\n"
+  },
+  "questions": [
+    {
+      "id": "a3-1",
+      "type": "single",
+      "prompt": "類比：checkpoint 像瀏覽器分頁，store 像？",
+      "answer": "b",
+      "explanation": "筆記類比：checkpoint 是瀏覽器分頁工作階段；store 是帳戶檔案。",
+      "sourceNote": "07-advanced/03-long-term-memory.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "臨時 Cookie"
+        },
+        {
+          "id": "b",
+          "label": "帳戶檔案"
+        },
+        {
+          "id": "c",
+          "label": "螢幕保護程式"
+        },
+        {
+          "id": "d",
+          "label": "DNS 快取"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "a3-2",
+      "type": "boolean",
+      "prompt": "長期事實只 append 到 messages 就能跨 thread 記住。",
+      "answer": false,
+      "explanation": "長期事實只寫 messages → 換 thread 就沒。應放 Store。",
+      "sourceNote": "07-advanced/03-long-term-memory.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "a3-3",
+      "type": "fill",
+      "prompt": "寫入 store 的方法名？store.________(namespace, key, value)",
+      "answer": [
+        "put"
+      ],
+      "explanation": "store.put(namespace, key, value: dict)。",
+      "sourceNote": "07-advanced/03-long-term-memory.md",
+      "placeholder": "put",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "a3-4",
+      "type": "multi",
+      "prompt": "關於 search，哪些正確？",
+      "answer": [
+        "a",
+        "c"
+      ],
+      "explanation": "search 是前綴匹配；排序跨後端可能不一致，官方要你 client-side sort。",
+      "sourceNote": "07-advanced/03-long-term-memory.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "namespace search 是前綴匹配"
+        },
+        {
+          "id": "b",
+          "label": "所有後端 search 排序保證一致"
+        },
+        {
+          "id": "c",
+          "label": "必要時自行 client-side sort"
+        },
+        {
+          "id": "d",
+          "label": "InMemoryStore 可直接上多副本生產"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "a3-5",
+      "type": "scenario",
+      "prompt": "新 thread_id 仍要讀同一使用者偏好，應？",
+      "answer": "c",
+      "explanation": "換 thread 仍可讀同一 namespace 的 store。",
+      "sourceNote": "07-advanced/03-long-term-memory.md",
+      "context": "使用者開了新對話。",
+      "options": [
+        {
+          "id": "a",
+          "label": "指望 checkpointer 自動帶過去"
+        },
+        {
+          "id": "b",
+          "label": "叫使用者再說一次就好"
+        },
+        {
+          "id": "c",
+          "label": "從同一 user namespace 的 store 讀取"
+        },
+        {
+          "id": "d",
+          "label": "刪掉所有記憶重來"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

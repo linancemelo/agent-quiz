@@ -1,0 +1,127 @@
+{
+  "id": "projects-02-langgraph-workflow",
+  "moduleId": "projects",
+  "title": "專案二：多狀態工作流",
+  "order": 2,
+  "summary": "起草 → 檢查 → 人工核准 → 發布。",
+  "sourceNote": "projects/02-langgraph-workflow/README.md",
+  "tags": [
+    "project",
+    "langgraph",
+    "hitl"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 StateGraph 做內容編輯台：draft → quality_check → human_review → publish。\n\n## 重點\n- 條件邊分流；retries 防無限迴圈\n- interrupt + Command(resume=) + 同 thread_id\n- resume 重跑節點開頭 → 副作用冪等\n- 無 LLM 也能跑完暫停→resume→published\n"
+  },
+  "questions": [
+    {
+      "id": "p2-1",
+      "type": "single",
+      "prompt": "human_review 暫停後，恢復應用？",
+      "answer": "b",
+      "explanation": "Command(resume={\"approved\": True, ...}) 且同一 thread_id。",
+      "sourceNote": "projects/02-langgraph-workflow/README.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "換新 thread_id 再 invoke 普通 dict"
+        },
+        {
+          "id": "b",
+          "label": "同 thread_id + Command(resume=...)"
+        },
+        {
+          "id": "c",
+          "label": "重開電腦"
+        },
+        {
+          "id": "d",
+          "label": "刪掉 checkpointer"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p2-2",
+      "type": "boolean",
+      "prompt": "本專案驗收要求：無 LLM 也能跑完暫停→resume→published。",
+      "answer": true,
+      "explanation": "驗收：無 LLM 也能跑完「暫停 → resume → published」。",
+      "sourceNote": "projects/02-langgraph-workflow/README.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p2-3",
+      "type": "fill",
+      "prompt": "防止檢查失敗無限退回的狀態欄位名？",
+      "answer": [
+        "retries"
+      ],
+      "explanation": "簡易防無限迴圈用 retries 上限。",
+      "sourceNote": "projects/02-langgraph-workflow/README.md",
+      "placeholder": "retries",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p2-4",
+      "type": "multi",
+      "prompt": "流程節點大致包含？",
+      "answer": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "explanation": "draft → quality_check → human_review → publish（失敗可退回 draft）。",
+      "sourceNote": "projects/02-langgraph-workflow/README.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "draft"
+        },
+        {
+          "id": "b",
+          "label": "quality_check"
+        },
+        {
+          "id": "c",
+          "label": "human_review"
+        },
+        {
+          "id": "d",
+          "label": "publish"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p2-5",
+      "type": "scenario",
+      "prompt": "resume 無效，優先排查？",
+      "answer": "a",
+      "explanation": "除錯：同一 thread_id？有 checkpointer？",
+      "sourceNote": "projects/02-langgraph-workflow/README.md",
+      "context": "核准後狀態沒動。",
+      "options": [
+        {
+          "id": "a",
+          "label": "thread_id 與 checkpointer"
+        },
+        {
+          "id": "b",
+          "label": "改 embedding 模型"
+        },
+        {
+          "id": "c",
+          "label": "加更多 emoji"
+        },
+        {
+          "id": "d",
+          "label": "關掉 TypedDict"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}

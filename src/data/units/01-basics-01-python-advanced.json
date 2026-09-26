@@ -1,0 +1,140 @@
+{
+  "id": "01-basics-01-python-advanced",
+  "moduleId": "01-basics",
+  "title": "Python 進階要點",
+  "order": 1,
+  "summary": "typing、async、Pydantic Field——Agent 工程的基本功。",
+  "sourceNote": "01-basics/01-python-advanced.md",
+  "tags": [
+    "python",
+    "pydantic",
+    "async"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n把 typing、async、資料模型與錯誤處理練到能讀寫現代 LangChain／FastAPI 程式碼。\n\n## 為何需要\n- LangChain Tools 靠 **type hints** 產生 JSON schema 給模型。\n- FastAPI／Pydantic 用同一套模型做請求驗證。\n- 向量庫、HTTP、LLM API 幾乎都是 IO 密集 → async 提升吞吐。\n\n## 官方重點速記\n- `Field(description=..., ge=...)` 同時進 JSON Schema 與執行期驗證。\n- 模型屬性用 `from pydantic import Field`（不是從 fastapi）。\n- V2 預設不會驗證 default；要驗證需 `validate_default=True`。\n- 嚴格 structured output 下，隨意 `dict[str, Any]` 常被拒。\n\n## 常見坑\n1. Tool 參數沒寫 type hint → schema 爛。\n2. async 路徑裡跑同步 `requests` → 卡死 event loop。\n3. API key 寫進程式碼或 commit 進 git。\n"
+  },
+  "questions": [
+    {
+      "id": "b1-1",
+      "type": "single",
+      "prompt": "LangChain Tools 主要靠什麼產生給模型看的 JSON schema？",
+      "answer": "a",
+      "explanation": "筆記明寫：Tools 靠 type hints 產生 JSON schema 給模型。好的型別註解＝好的工具說明書。",
+      "sourceNote": "01-basics/01-python-advanced.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "函式的 type hints"
+        },
+        {
+          "id": "b",
+          "label": "函式名稱的長度"
+        },
+        {
+          "id": "c",
+          "label": "註解裡的 emoji"
+        },
+        {
+          "id": "d",
+          "label": "檔案副檔名"
+        }
+      ],
+      "difficulty": "beginner",
+      "tags": [
+        "tools",
+        "typing"
+      ]
+    },
+    {
+      "id": "b1-2",
+      "type": "boolean",
+      "prompt": "FastAPI 模型屬性的 Field 應該從 fastapi 套件匯入，而不是 pydantic。",
+      "answer": false,
+      "explanation": "官方重點：模型屬性用 `from pydantic import Field`（不是從 fastapi 匯入）。Query／Path／Body 才是 FastAPI 的。",
+      "sourceNote": "01-basics/01-python-advanced.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b1-3",
+      "type": "multi",
+      "prompt": "下列哪些是 Pydantic Field 可用的數值約束？（可多選）",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "筆記列出數值約束：`gt`／`ge`／`lt`／`le`。`regex` 在 v2 已改為 `pattern`，且是字串約束不是數值。",
+      "sourceNote": "01-basics/01-python-advanced.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "gt（大於）"
+        },
+        {
+          "id": "b",
+          "label": "ge（大於等於）"
+        },
+        {
+          "id": "c",
+          "label": "le（小於等於）"
+        },
+        {
+          "id": "d",
+          "label": "regex（作為數值約束）"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "b1-4",
+      "type": "fill",
+      "prompt": "在 async 路徑裡若要做 HTTP，筆記建議改用哪個非同步客戶端？（填套件名，如 httpx.AsyncClient 的主套件）",
+      "answer": [
+        "httpx",
+        "httpx.AsyncClient"
+      ],
+      "explanation": "常見坑：在 async 路徑直接跑同步 requests 會卡死 event loop，應改 `httpx.AsyncClient` 或 `asyncio.to_thread`。",
+      "sourceNote": "01-basics/01-python-advanced.md",
+      "placeholder": "httpx",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b1-5",
+      "type": "scenario",
+      "prompt": "你在設計嚴格模式（OpenAI strict schema）的 structured output，同事想用 `dict[str, Any]` 當欄位型別。你該怎麼辦？",
+      "answer": "b",
+      "explanation": "筆記提醒：嚴格模式下隨意 `dict[str, Any]` 常被拒。應改成明確欄位與 Field description。",
+      "sourceNote": "01-basics/01-python-advanced.md",
+      "context": "OpenAI strict schema 正在驗證你的工具／輸出 schema。",
+      "options": [
+        {
+          "id": "a",
+          "label": "沒問題，Any 最彈性"
+        },
+        {
+          "id": "b",
+          "label": "改成明確欄位與約束，避免 Any dict"
+        },
+        {
+          "id": "c",
+          "label": "把型別全改成 str"
+        },
+        {
+          "id": "d",
+          "label": "關掉網路就能過"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "b1-6",
+      "type": "boolean",
+      "prompt": "Pydantic V2 預設會驗證欄位的 default 值。",
+      "answer": false,
+      "explanation": "官方重點：V2 預設不會驗證 default；要驗證需 `validate_default=True`。",
+      "sourceNote": "01-basics/01-python-advanced.md",
+      "difficulty": "intermediate"
+    }
+  ]
+}

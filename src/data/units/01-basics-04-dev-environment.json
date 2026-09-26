@@ -1,0 +1,141 @@
+{
+  "id": "01-basics-04-dev-environment",
+  "moduleId": "01-basics",
+  "title": "開發環境與最小 Agent",
+  "order": 4,
+  "summary": "乾淨 venv + create_agent，跑通第一個 Hello Agent。",
+  "sourceNote": "01-basics/04-dev-environment.md",
+  "tags": [
+    "setup",
+    "create_agent",
+    "venv"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n在乾淨 venv 裡裝好 LangChain 1.x，跑通第一個 `create_agent`。\n\n## 重點\n- Python **≥ 3.10**（3.9 於 2025-10 EOL）。\n- 標準入口：`from langchain.agents import create_agent`\n- **已棄用**：`langgraph.prebuilt.create_react_agent`；`prompt=` → `system_prompt=`\n- 呼叫：`agent.invoke({\"messages\": [...]})`\n- Legacy 進 `langchain-classic`\n"
+  },
+  "questions": [
+    {
+      "id": "b4-1",
+      "type": "single",
+      "prompt": "LangChain／LangGraph v1 要求的最低 Python 版本？",
+      "answer": "c",
+      "explanation": "官方 v1：Python ≥ 3.10（3.9 於 2025-10 EOL）。",
+      "sourceNote": "01-basics/04-dev-environment.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "3.8"
+        },
+        {
+          "id": "b",
+          "label": "3.9"
+        },
+        {
+          "id": "c",
+          "label": "3.10"
+        },
+        {
+          "id": "d",
+          "label": "3.12 才行"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b4-2",
+      "type": "boolean",
+      "prompt": "新專案仍應以 create_react_agent 作為 Agent 標準入口。",
+      "answer": false,
+      "explanation": "已棄用 create_react_agent；標準入口是 langchain.agents.create_agent。",
+      "sourceNote": "01-basics/04-dev-environment.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b4-3",
+      "type": "fill",
+      "prompt": "create_agent 裡用來取代舊參數 prompt= 的新參數名是？",
+      "answer": [
+        "system_prompt"
+      ],
+      "explanation": "參數名 prompt= → 改 system_prompt=。",
+      "sourceNote": "01-basics/04-dev-environment.md",
+      "placeholder": "system_prompt",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b4-4",
+      "type": "code",
+      "prompt": "寫出正確的 import：from langchain.agents import ________",
+      "answer": [
+        "create_agent"
+      ],
+      "explanation": "官方：from langchain.agents import create_agent",
+      "sourceNote": "01-basics/04-dev-environment.md",
+      "language": "python",
+      "starter": "from langchain.agents import ",
+      "match": "normalize_whitespace",
+      "runner": "string",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b4-5",
+      "type": "multi",
+      "prompt": "哪些是常見環境坑？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "常見坑含：全局 pip 亂裝、跟著舊文裝 0.x、把 .env 提交 git、忘記 OPENAI_API_KEY、繼續複製 create_react_agent。",
+      "sourceNote": "01-basics/04-dev-environment.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "把 .env 提交到 git"
+        },
+        {
+          "id": "b",
+          "label": "混裝 langchain 0.1 當主路徑"
+        },
+        {
+          "id": "c",
+          "label": "繼續用 create_react_agent(..., prompt=...)"
+        },
+        {
+          "id": "d",
+          "label": "使用獨立 venv"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b4-6",
+      "type": "scenario",
+      "prompt": "invoke Agent 的輸入形狀，筆記示範是哪種？",
+      "answer": "b",
+      "explanation": "呼叫形狀：agent.invoke({\"messages\": [{\"role\":\"user\",\"content\":\"...\"}]})",
+      "sourceNote": "01-basics/04-dev-environment.md",
+      "context": "你剛寫完 hello_agent.py。",
+      "options": [
+        {
+          "id": "a",
+          "label": "agent.invoke(\"直接字串\")"
+        },
+        {
+          "id": "b",
+          "label": "agent.invoke({\"messages\": [{\"role\":\"user\",\"content\": \"...\"}]})"
+        },
+        {
+          "id": "c",
+          "label": "agent.run(prompt=...)"
+        },
+        {
+          "id": "d",
+          "label": "agent({\"text\": \"...\"})"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

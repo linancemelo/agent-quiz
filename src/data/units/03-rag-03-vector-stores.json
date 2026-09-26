@@ -1,0 +1,126 @@
+{
+  "id": "03-rag-03-vector-stores",
+  "moduleId": "03-rag",
+  "title": "向量庫與 Retriever",
+  "order": 3,
+  "summary": "add_documents → similarity_search → as_retriever。",
+  "sourceNote": "03-rag/03-vector-stores.md",
+  "tags": [
+    "vectorstore",
+    "retriever",
+    "rag"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n把嵌入後的 chunks 存進向量庫，並用 similarity_search／as_retriever 取出相關文件。\n\n## 重點\n- 開發：InMemoryVectorStore；產品：Chroma／Qdrant／PGVector／Pinecone\n- search_type：similarity（預設）、mmr、similarity_score_threshold\n- VectorStore 不是 Runnable；必須 as_retriever()\n- InMemory 範例 score 是「距離，越小越像」\n"
+  },
+  "questions": [
+    {
+      "id": "r3-1",
+      "type": "boolean",
+      "prompt": "可以把 VectorStore 直接用 | 串進 LCEL，不必 as_retriever。",
+      "answer": false,
+      "explanation": "VectorStore 不是 Runnable；必須 as_retriever() 才能 |。",
+      "sourceNote": "03-rag/03-vector-stores.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r3-2",
+      "type": "single",
+      "prompt": "Retriever 預設 search_type 通常是？",
+      "answer": "a",
+      "explanation": "similarity（預設）；另有 mmr、similarity_score_threshold。",
+      "sourceNote": "03-rag/03-vector-stores.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "similarity"
+        },
+        {
+          "id": "b",
+          "label": "random"
+        },
+        {
+          "id": "c",
+          "label": "alphabetical"
+        },
+        {
+          "id": "d",
+          "label": "fifo"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r3-3",
+      "type": "fill",
+      "prompt": "在相關性與多樣性之間取平衡的 search_type 名稱？",
+      "answer": [
+        "mmr"
+      ],
+      "explanation": "mmr（Maximum Marginal Relevance）在相關性 × 多樣性間取捨。",
+      "sourceNote": "03-rag/03-vector-stores.md",
+      "placeholder": "mmr",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "r3-4",
+      "type": "multi",
+      "prompt": "常見坑包含？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "忘記 add_documents、k 太大／太小、把 VectorStore 當 Runnable、跨後端比較絕對分數。",
+      "sourceNote": "03-rag/03-vector-stores.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "忘記 add_documents 就查詢"
+        },
+        {
+          "id": "b",
+          "label": "k 設太大導致噪音"
+        },
+        {
+          "id": "c",
+          "label": "跨後端比較絕對分數"
+        },
+        {
+          "id": "d",
+          "label": "使用 as_retriever()"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r3-5",
+      "type": "scenario",
+      "prompt": "knowledge-base 範例中 InMemory 的 score 方向是？",
+      "answer": "b",
+      "explanation": "InMemory 的 score 是「距離，越小越像」。不要假設所有後端都是越大越好。",
+      "sourceNote": "03-rag/03-vector-stores.md",
+      "context": "你在看 similarity_search_with_score。",
+      "options": [
+        {
+          "id": "a",
+          "label": "越大越像"
+        },
+        {
+          "id": "b",
+          "label": "距離：越小越像"
+        },
+        {
+          "id": "c",
+          "label": "永遠是 0.5"
+        },
+        {
+          "id": "d",
+          "label": "分數無意義可忽略 metadata"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}

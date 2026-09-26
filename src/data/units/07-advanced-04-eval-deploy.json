@@ -1,0 +1,126 @@
+{
+  "id": "07-advanced-04-eval-deploy",
+  "moduleId": "07-advanced",
+  "title": "評估閘道與部署",
+  "order": 4,
+  "summary": "Offline eval 當回歸閘道；生產換持久 checkpointer。",
+  "sourceNote": "07-advanced/04-eval-and-deploy.md",
+  "tags": [
+    "deploy",
+    "eval",
+    "ops"
+  ],
+  "difficulty": "advanced",
+  "lesson": {
+    "markdown": "## 一句話目標\n上線前用 Dataset＋evaluators 當閘道；部署面換持久後端並開 tracing。\n\n## 重點\n- Offline vs Online eval\n- Prompt 用 tag 晉升，關鍵路徑釘 SHA\n- checkpointer：Postgres／SQLite／Mongo；thread_id < 255\n- FastAPI lifespan；/health\n- LANGSMITH_TRACING + 分環境 PROJECT\n"
+  },
+  "questions": [
+    {
+      "id": "a4-1",
+      "type": "boolean",
+      "prompt": "多副本正式環境可以安心使用 InMemorySaver。",
+      "answer": false,
+      "explanation": "部署 checkpointer：勿用 InMemory。無狀態多副本若仍用記憶體，HITL 與多輪會壞。",
+      "sourceNote": "07-advanced/04-eval-and-deploy.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "a4-2",
+      "type": "single",
+      "prompt": "關鍵路徑的 prompt 版本建議？",
+      "answer": "c",
+      "explanation": "Prompt 用 tag 晉升，關鍵路徑釘 SHA。",
+      "sourceNote": "07-advanced/04-eval-and-deploy.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "永遠用 latest 浮動"
+        },
+        {
+          "id": "b",
+          "label": "寫在聊天軟體裡"
+        },
+        {
+          "id": "c",
+          "label": "釘 commit SHA"
+        },
+        {
+          "id": "d",
+          "label": "不版本化"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "a4-3",
+      "type": "fill",
+      "prompt": "現行追蹤環境變數？（不要填舊的 LANGCHAIN_TRACING_V2）",
+      "answer": [
+        "LANGSMITH_TRACING"
+      ],
+      "explanation": "新文件以 LANGSMITH_TRACING 為準。",
+      "sourceNote": "07-advanced/04-eval-and-deploy.md",
+      "placeholder": "LANGSMITH_TRACING",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "a4-4",
+      "type": "multi",
+      "prompt": "部署檢查清單常見項？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "REQUIRED/RECOMMENDED env、勿 InMemory 多副本、ENDPOINT 無尾隨斜線、設 recursion_limit／timeout。",
+      "sourceNote": "07-advanced/04-eval-and-deploy.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "檢查 OPENAI_API_KEY 等必要密鑰"
+        },
+        {
+          "id": "b",
+          "label": "多副本避免 InMemorySaver"
+        },
+        {
+          "id": "c",
+          "label": "LANGSMITH_ENDPOINT 無尾隨 /"
+        },
+        {
+          "id": "d",
+          "label": "關閉所有 /health"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "a4-5",
+      "type": "scenario",
+      "prompt": "評估集太小／太假，閘道通過後？",
+      "answer": "a",
+      "explanation": "常見坑：評估集太小／太假 → 閘道通過仍翻車。",
+      "sourceNote": "07-advanced/04-eval-and-deploy.md",
+      "context": "CI 全綠，生產卻翻車。",
+      "options": [
+        {
+          "id": "a",
+          "label": "仍可能上線翻車"
+        },
+        {
+          "id": "b",
+          "label": "保證完美"
+        },
+        {
+          "id": "c",
+          "label": "自動產生 1000 題"
+        },
+        {
+          "id": "d",
+          "label": "embedding 維度歸零"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

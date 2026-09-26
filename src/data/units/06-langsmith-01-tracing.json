@@ -1,0 +1,126 @@
+{
+  "id": "06-langsmith-01-tracing",
+  "moduleId": "06-langsmith",
+  "title": "LangSmith 追蹤",
+  "order": 1,
+  "summary": "開環境變數就能看執行樹；舊名 LANGCHAIN_* 請改 LANGSMITH_*。",
+  "sourceNote": "06-langsmith/01-tracing.md",
+  "tags": [
+    "langsmith",
+    "tracing",
+    "observability"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 LangSmith 看一次請求的完整執行樹。\n\n## 現行環境變數\n- LANGSMITH_TRACING=true\n- LANGSMITH_API_KEY\n- 可選 LANGSMITH_PROJECT、LANGSMITH_ENDPOINT（勿尾隨 /）、LANGSMITH_WORKSPACE_ID\n\n## 重點\n- LangGraph／LangChain 通常只開 env 就自動 trace\n- 其他 SDK：wrap_openai、@traceable\n- 舊教程 LANGCHAIN_TRACING_V2 → 現行以 LANGSMITH_* 為準\n"
+  },
+  "questions": [
+    {
+      "id": "s1-1",
+      "type": "single",
+      "prompt": "現行官方 observability quickstart 開啟追蹤的變數是？",
+      "answer": "b",
+      "explanation": "LANGSMITH_TRACING=true。舊名 LANGCHAIN_TRACING_V2 不應當新筆記主路徑。",
+      "sourceNote": "06-langsmith/01-tracing.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "LANGCHAIN_TRACING_V2"
+        },
+        {
+          "id": "b",
+          "label": "LANGSMITH_TRACING"
+        },
+        {
+          "id": "c",
+          "label": "OPENAI_TRACE"
+        },
+        {
+          "id": "d",
+          "label": "DEBUG=1"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "s1-2",
+      "type": "boolean",
+      "prompt": "LangGraph 一定要大改程式碼才能送 trace。",
+      "answer": false,
+      "explanation": "LangGraph／LangChain：設好 env 即可自動 trace。",
+      "sourceNote": "06-langsmith/01-tracing.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "s1-3",
+      "type": "fill",
+      "prompt": "包裝 OpenAI client 的函式名？________(OpenAI())",
+      "answer": [
+        "wrap_openai"
+      ],
+      "explanation": "其他 SDK：wrap_openai(OpenAI())、@traceable。",
+      "sourceNote": "06-langsmith/01-tracing.md",
+      "placeholder": "wrap_openai",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "s1-4",
+      "type": "multi",
+      "prompt": "可選但實用的 LangSmith 環境變數？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "PROJECT、ENDPOINT、WORKSPACE_ID。LANGSMITH_EMOJI 不是官方變數。",
+      "sourceNote": "06-langsmith/01-tracing.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "LANGSMITH_PROJECT"
+        },
+        {
+          "id": "b",
+          "label": "LANGSMITH_ENDPOINT"
+        },
+        {
+          "id": "c",
+          "label": "LANGSMITH_WORKSPACE_ID"
+        },
+        {
+          "id": "d",
+          "label": "LANGSMITH_EMOJI"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "s1-5",
+      "type": "scenario",
+      "prompt": "endpoint 多了尾隨斜線，常見後果？",
+      "answer": "a",
+      "explanation": "官方警告：不要加尾隨斜線，否則可能認證失敗。",
+      "sourceNote": "06-langsmith/01-tracing.md",
+      "context": "API key 看起來是對的卻一直失敗。",
+      "options": [
+        {
+          "id": "a",
+          "label": "可能認證失敗"
+        },
+        {
+          "id": "b",
+          "label": "自動變快"
+        },
+        {
+          "id": "c",
+          "label": "專案改名"
+        },
+        {
+          "id": "d",
+          "label": "改用 mmr"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

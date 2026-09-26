@@ -1,0 +1,126 @@
+{
+  "id": "05-fastapi-02-dependencies",
+  "moduleId": "05-fastapi-pydantic",
+  "title": "FastAPI 依賴注入",
+  "order": 2,
+  "summary": "Annotated[T, Depends(fn)]：共用邏輯、好測試。",
+  "sourceNote": "05-fastapi-pydantic/02-fastapi-dependencies.md",
+  "tags": [
+    "fastapi",
+    "depends",
+    "di"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 Depends 共用分頁、鑑權、注入已 compile 的 graph。\n\n## 重點\n- 現行推薦：Annotated[T, Depends(fn)]（FastAPI ≥0.95）\n- 子依賴自動解析；同請求預設 cache\n- yield 依賴做 setup／teardown\n- 測試：app.dependency_overrides\n- 常見坑：Depends(fn()) 多寫括號\n"
+  },
+  "questions": [
+    {
+      "id": "f2-1",
+      "type": "boolean",
+      "prompt": "應該寫 Depends(fn())（先呼叫再傳入），而不是 Depends(fn)。",
+      "answer": false,
+      "explanation": "常見坑：Depends(fn()) 多寫括號；應傳可呼叫物件本身 Depends(fn)。",
+      "sourceNote": "05-fastapi-pydantic/02-fastapi-dependencies.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "f2-2",
+      "type": "single",
+      "prompt": "現行推薦的 Depends 寫法是？",
+      "answer": "b",
+      "explanation": "Annotated[T, Depends(fn)]（FastAPI ≥0.95 開始支援並推薦）。",
+      "sourceNote": "05-fastapi-pydantic/02-fastapi-dependencies.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "只用全域變數"
+        },
+        {
+          "id": "b",
+          "label": "Annotated[T, Depends(fn)]"
+        },
+        {
+          "id": "c",
+          "label": "在每個 endpoint 複製貼上"
+        },
+        {
+          "id": "d",
+          "label": "把依賴寫進 HTML"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "f2-3",
+      "type": "fill",
+      "prompt": "測試時覆寫依賴的屬性名？app.________",
+      "answer": [
+        "dependency_overrides"
+      ],
+      "explanation": "測試時 app.dependency_overrides[...] = ...",
+      "sourceNote": "05-fastapi-pydantic/02-fastapi-dependencies.md",
+      "placeholder": "dependency_overrides",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "f2-4",
+      "type": "multi",
+      "prompt": "Depends 適合用來？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "共用分頁、取得 DB／Agent、檢查 API Key。不適合在依賴裡做重 LLM 呼叫當常態。",
+      "sourceNote": "05-fastapi-pydantic/02-fastapi-dependencies.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "檢查 API Key"
+        },
+        {
+          "id": "b",
+          "label": "注入已編譯 graph"
+        },
+        {
+          "id": "c",
+          "label": "共用分頁參數"
+        },
+        {
+          "id": "d",
+          "label": "每次請求現場 compile 新 graph（當建議）"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "f2-5",
+      "type": "scenario",
+      "prompt": "yield 依賴主要用來？",
+      "answer": "c",
+      "explanation": "yield 依賴：setup／teardown（連線池）。",
+      "sourceNote": "05-fastapi-pydantic/02-fastapi-dependencies.md",
+      "context": "你需要請求結束後關閉連線。",
+      "options": [
+        {
+          "id": "a",
+          "label": "讓回應變彩色"
+        },
+        {
+          "id": "b",
+          "label": "取代 OpenAPI"
+        },
+        {
+          "id": "c",
+          "label": "setup／teardown 資源"
+        },
+        {
+          "id": "d",
+          "label": "關閉 type hints"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

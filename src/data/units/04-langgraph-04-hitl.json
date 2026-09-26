@@ -1,0 +1,135 @@
+{
+  "id": "04-langgraph-04-hitl",
+  "moduleId": "04-langgraph",
+  "title": "人機協作 Interrupts",
+  "order": 4,
+  "summary": "interrupt 暫停，Command(resume=) 繼續。",
+  "sourceNote": "04-langgraph/04-human-in-the-loop.md",
+  "tags": [
+    "hitl",
+    "interrupt",
+    "resume"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 interrupt 做人機核准，並正確 resume。\n\n## 重點\n- 必要：checkpointer + thread_id + JSON 可序列化 payload\n- Resume：Command(resume=value)，值成為 interrupt() 回傳值\n- resume 後從該節點開頭重跑 → 副作用必須冪等\n- 不要裸 try/except Exception 包 interrupt\n- 不要 while True + 多次 interrupt；每輪只 interrupt 一次\n- 靜態斷點 interrupt_before／after 恢復時可 invoke(None, config)\n"
+  },
+  "questions": [
+    {
+      "id": "g4-1",
+      "type": "single",
+      "prompt": "恢復 interrupt 的正確輸入是？",
+      "answer": "b",
+      "explanation": "graph.invoke(Command(resume=...), config)。",
+      "sourceNote": "04-langgraph/04-human-in-the-loop.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "graph.invoke(\"ok\")"
+        },
+        {
+          "id": "b",
+          "label": "graph.invoke(Command(resume=...), config)"
+        },
+        {
+          "id": "c",
+          "label": "刪掉 checkpointer"
+        },
+        {
+          "id": "d",
+          "label": "換一個新 thread_id"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "g4-2",
+      "type": "boolean",
+      "prompt": "可以用裸 try/except Exception 包住 interrupt，比較安全。",
+      "answer": false,
+      "explanation": "不要用裸 try/except Exception 包住 interrupt（會吃掉暫停用的特殊例外）。",
+      "sourceNote": "04-langgraph/04-human-in-the-loop.md",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "g4-3",
+      "type": "fill",
+      "prompt": "暫停圖執行的函式名？",
+      "answer": [
+        "interrupt"
+      ],
+      "explanation": "interrupt(payload) 讓圖暫停。",
+      "sourceNote": "04-langgraph/04-human-in-the-loop.md",
+      "placeholder": "interrupt",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "g4-4",
+      "type": "multi",
+      "prompt": "HITL 必要條件包含？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "必要條件：checkpointer + thread_id + JSON 可序列化 payload。",
+      "sourceNote": "04-langgraph/04-human-in-the-loop.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "checkpointer"
+        },
+        {
+          "id": "b",
+          "label": "thread_id"
+        },
+        {
+          "id": "c",
+          "label": "JSON 可序列化 payload"
+        },
+        {
+          "id": "d",
+          "label": "必須有 GPU"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "g4-5",
+      "type": "scenario",
+      "prompt": "在 interrupt 之前寄出郵件，resume 後可能？",
+      "answer": "a",
+      "explanation": "resume 後從節點開頭重跑——之前的副作用必須冪等；否則可能再寄一次。",
+      "sourceNote": "04-langgraph/04-human-in-the-loop.md",
+      "context": "高風險動作。",
+      "options": [
+        {
+          "id": "a",
+          "label": "再寄一次（非冪等副作用）"
+        },
+        {
+          "id": "b",
+          "label": "郵件自動撤回"
+        },
+        {
+          "id": "c",
+          "label": "thread_id 改變"
+        },
+        {
+          "id": "d",
+          "label": "改用 mmr"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "g4-6",
+      "type": "boolean",
+      "prompt": "官方建議用 while True + 多次 interrupt 做驗證迴圈。",
+      "answer": false,
+      "explanation": "不要在節點內用 while True + 多次 interrupt；應每輪 invoke 只 interrupt 一次，用條件邊重問。",
+      "sourceNote": "04-langgraph/04-human-in-the-loop.md",
+      "difficulty": "intermediate"
+    }
+  ]
+}

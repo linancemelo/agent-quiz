@@ -1,0 +1,128 @@
+{
+  "id": "03-rag-04-retrieval-rerank",
+  "moduleId": "03-rag",
+  "title": "檢索、重排序與 Agentic RAG",
+  "order": 4,
+  "summary": "2-Step vs Agentic；多取再 rerank。",
+  "sourceNote": "03-rag/04-retrieval-rerank.md",
+  "tags": [
+    "retrieval",
+    "rerank",
+    "agentic-rag"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n把取回的片段整理成高訊號上下文，並知道何時改用 Agent 決定何時檢索。\n\n## 架構\n- **2-Step RAG**：先 retrieve 再 generate（可控、快）\n- **Agentic RAG**：檢索包成 @tool，交給 create_agent\n- **Hybrid**：驗證迴圈\n\n## 重點\n- 多取（如 k=20）再 rerank 壓成 top-n\n- Cohere Rerank：POST /v2/rerank；回傳 index + relevance_score\n- 未接 rerank 服務的「多取再排序」≠ 真正 cross-encoder rerank\n"
+  },
+  "questions": [
+    {
+      "id": "r4-1",
+      "type": "single",
+      "prompt": "Agentic RAG 的核心做法是？",
+      "answer": "c",
+      "explanation": "把檢索包成 @tool，交給 create_agent，讓模型決定何時呼叫。",
+      "sourceNote": "03-rag/04-retrieval-rerank.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "永遠 retrieve 50 段全塞進 prompt"
+        },
+        {
+          "id": "b",
+          "label": "禁用所有工具"
+        },
+        {
+          "id": "c",
+          "label": "把檢索包成 tool 給 create_agent"
+        },
+        {
+          "id": "d",
+          "label": "只用正則抓關鍵字"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r4-2",
+      "type": "boolean",
+      "prompt": "把 k=50 的結果全部塞進 prompt 是提升答案品質的穩妥作法。",
+      "answer": false,
+      "explanation": "常見坑：k=50 全塞進 prompt → 噪音壓過答案、又貴。",
+      "sourceNote": "03-rag/04-retrieval-rerank.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r4-3",
+      "type": "fill",
+      "prompt": "官方 retrieval 頁表格中，可控且快的架構名稱是？（含連字號或數字，如 2-Step）",
+      "answer": [
+        "2-Step",
+        "2-Step RAG",
+        "2-step"
+      ],
+      "explanation": "架構對照：2-Step（可控、快）／Agentic（彈性）／Hybrid。",
+      "sourceNote": "03-rag/04-retrieval-rerank.md",
+      "placeholder": "2-Step",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r4-4",
+      "type": "multi",
+      "prompt": "Cohere Rerank API 必填參數包含？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "必填 model、query、documents；可選 top_n、max_tokens_per_doc。",
+      "sourceNote": "03-rag/04-retrieval-rerank.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "model"
+        },
+        {
+          "id": "b",
+          "label": "query"
+        },
+        {
+          "id": "c",
+          "label": "documents"
+        },
+        {
+          "id": "d",
+          "label": "gpu_count（必填）"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "r4-5",
+      "type": "scenario",
+      "prompt": "沒有引用約束時，模型容易？",
+      "answer": "a",
+      "explanation": "常見坑：沒有引用約束 → 模型忽略檢索結果開始幻覺。",
+      "sourceNote": "03-rag/04-retrieval-rerank.md",
+      "context": "system prompt 很鬆。",
+      "options": [
+        {
+          "id": "a",
+          "label": "忽略檢索結果開始幻覺"
+        },
+        {
+          "id": "b",
+          "label": "自動呼叫 Cohere"
+        },
+        {
+          "id": "c",
+          "label": "向量維度變 0"
+        },
+        {
+          "id": "d",
+          "label": "改用 mmr"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

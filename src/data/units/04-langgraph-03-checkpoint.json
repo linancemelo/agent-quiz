@@ -1,0 +1,126 @@
+{
+  "id": "04-langgraph-03-checkpoint",
+  "moduleId": "04-langgraph",
+  "title": "Checkpoint 與 Persistence",
+  "order": 3,
+  "summary": "thread_id 分線程的短期快照；Store 才是跨 thread。",
+  "sourceNote": "04-langgraph/03-checkpoint-persistence.md",
+  "tags": [
+    "checkpoint",
+    "persistence",
+    "thread_id"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n理解 checkpointer 短期記憶與 store 長期記憶，並能存取狀態歷史。\n\n## 重點\n- compile(checkpointer=..., store=...)；config 需 thread_id\n- InMemorySaver；MemorySaver 在 1.2.x 為別名\n- 生產：langgraph-checkpoint-sqlite／postgres\n- Postgres thread_id 建議 < 255 字元\n- get_state／get_state_history\n- Durability：exit／async／sync\n"
+  },
+  "questions": [
+    {
+      "id": "g3-1",
+      "type": "boolean",
+      "prompt": "沒有 thread_id，checkpointer 仍然可以正常存取狀態。",
+      "answer": false,
+      "explanation": "沒有 thread_id，checkpointer 無法存取狀態。",
+      "sourceNote": "04-langgraph/03-checkpoint-persistence.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "g3-2",
+      "type": "single",
+      "prompt": "InMemorySaver 上線多副本的問題是？",
+      "answer": "c",
+      "explanation": "重啟全沒；多副本不共享。生產需 Sqlite／Postgres 等。",
+      "sourceNote": "04-langgraph/03-checkpoint-persistence.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "太貴"
+        },
+        {
+          "id": "b",
+          "label": "不支援 TypedDict"
+        },
+        {
+          "id": "c",
+          "label": "重啟遺失且多副本不共享"
+        },
+        {
+          "id": "d",
+          "label": "不能叫 MemorySaver 別名"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "g3-3",
+      "type": "fill",
+      "prompt": "檢視目前狀態的方法名？graph.________(config)",
+      "answer": [
+        "get_state"
+      ],
+      "explanation": "graph.get_state(config) → StateSnapshot。",
+      "sourceNote": "04-langgraph/03-checkpoint-persistence.md",
+      "placeholder": "get_state",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "g3-4",
+      "type": "multi",
+      "prompt": "Durability modes 包含？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "exit／async／sync。random 不是。",
+      "sourceNote": "04-langgraph/03-checkpoint-persistence.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "exit"
+        },
+        {
+          "id": "b",
+          "label": "async"
+        },
+        {
+          "id": "c",
+          "label": "sync"
+        },
+        {
+          "id": "d",
+          "label": "random"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "g3-5",
+      "type": "scenario",
+      "prompt": "Postgres 上 thread_id 過長可能？",
+      "answer": "b",
+      "explanation": "Postgres 欄位有限，官方 troubleshooting 建議 thread_id < 255 字元。",
+      "sourceNote": "04-langgraph/03-checkpoint-persistence.md",
+      "context": "DB 報錯，thread_id 是一篇作文。",
+      "options": [
+        {
+          "id": "a",
+          "label": "自動截斷並成功"
+        },
+        {
+          "id": "b",
+          "label": "可能觸發 DB 錯誤"
+        },
+        {
+          "id": "c",
+          "label": "改用 cosine"
+        },
+        {
+          "id": "d",
+          "label": "升級 embedding"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}

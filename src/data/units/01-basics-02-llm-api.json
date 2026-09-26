@@ -1,0 +1,141 @@
+{
+  "id": "01-basics-02-llm-api",
+  "moduleId": "01-basics",
+  "title": "LLM API 心智模型",
+  "order": 2,
+  "summary": "訊息序列 + 工具結果＝Agent loop 的本質。",
+  "sourceNote": "01-basics/02-llm-api-mental-model.md",
+  "tags": [
+    "llm",
+    "embeddings",
+    "tool-calling"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n用「訊息序列 + 工具結果」理解每次 LLM 呼叫，而不是神奇黑盒。\n\n## 白話\n你傳的是 messages（system／user／assistant／tool）。模型回 assistant message，可能含 **tool_calls**。你執行工具後用 tool message 塞回對話再呼叫——這就是 Agent loop。\n\n## 官方重點\n- Embeddings：`text-embedding-3-small` 預設 **1536** 維；`large` 預設 **3072** 維；Max input ≈ 8192 tokens。\n- 距離建議 **cosine**。\n- 新專案建議 Responses API；Chat Completions 仍支援。\n- Assistants API 已於 **2026-08-26 sunset**。\n- 模型只「提議」呼叫工具；執行在你這邊。\n"
+  },
+  "questions": [
+    {
+      "id": "b2-1",
+      "type": "single",
+      "prompt": "text-embedding-3-small 的預設維度是？",
+      "answer": "b",
+      "explanation": "官方 embeddings 指南：small 預設 1536 維，large 預設 3072 維。",
+      "sourceNote": "01-basics/02-llm-api-mental-model.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "768"
+        },
+        {
+          "id": "b",
+          "label": "1536"
+        },
+        {
+          "id": "c",
+          "label": "3072"
+        },
+        {
+          "id": "d",
+          "label": "4096"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b2-2",
+      "type": "boolean",
+      "prompt": "模型產生 tool_calls 後，工具會在 provider 端自動執行（無需你的程式介入）。",
+      "answer": false,
+      "explanation": "Tool calling 心智：模型只「提議」呼叫；執行在你這邊（除非 provider 內建 server-side tools）。",
+      "sourceNote": "01-basics/02-llm-api-mental-model.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b2-3",
+      "type": "fill",
+      "prompt": "OpenAI 官方建議 embeddings 使用哪種距離度量？（英文小寫）",
+      "answer": [
+        "cosine"
+      ],
+      "explanation": "距離度量官方建議 cosine；v3 embeddings 已正規化，cosine 與 L2 排序通常一致。",
+      "sourceNote": "01-basics/02-llm-api-mental-model.md",
+      "placeholder": "cosine",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b2-4",
+      "type": "multi",
+      "prompt": "關於 Responses API 與 Chat Completions，哪些叙述正確？",
+      "answer": [
+        "a",
+        "c"
+      ],
+      "explanation": "新專案建議 Responses；Chat Completions 仍支援。Assistants API 已 sunset，不是「仍建議使用」。讀輸出時 Chat 用 choices[0]，Responses 用 output_text／output。",
+      "sourceNote": "01-basics/02-llm-api-mental-model.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "新專案建議用 Responses API"
+        },
+        {
+          "id": "b",
+          "label": "Assistants API 仍是官方首選"
+        },
+        {
+          "id": "c",
+          "label": "Chat Completions 仍受支援"
+        },
+        {
+          "id": "d",
+          "label": "Responses 仍應讀 choices[0].message"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "b2-5",
+      "type": "scenario",
+      "prompt": "同事把整份 PDF 知識庫貼進 system prompt。你會提醒什麼？",
+      "answer": "c",
+      "explanation": "常見坑：把整份知識庫塞進 prompt（貴、易爆 context）→ 該用 RAG／工具取回片段。",
+      "sourceNote": "01-basics/02-llm-api-mental-model.md",
+      "context": "context window 與費用都在飆升。",
+      "options": [
+        {
+          "id": "a",
+          "label": "很好，這樣最準"
+        },
+        {
+          "id": "b",
+          "label": "只要把 temperature 調到 0 就沒問題"
+        },
+        {
+          "id": "c",
+          "label": "該改用 RAG／工具取回片段，避免爆 context"
+        },
+        {
+          "id": "d",
+          "label": "改成只貼檔名即可"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "b2-6",
+      "type": "code",
+      "prompt": "補上 embeddings 回傳維度的表達式（變數 vec 已是 list[float]）：印出維度應寫 len(____)",
+      "answer": [
+        "vec",
+        "len(vec)"
+      ],
+      "explanation": "程式碼示範：`print(\"embedding dim:\", len(vec))  # 預期 1536`",
+      "sourceNote": "01-basics/02-llm-api-mental-model.md",
+      "language": "python",
+      "starter": "print(\"embedding dim:\", len(___))",
+      "match": "normalize_whitespace",
+      "runner": "string",
+      "difficulty": "beginner"
+    }
+  ]
+}

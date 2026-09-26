@@ -1,0 +1,107 @@
+{
+  "title": "Agent 速成班｜互動測驗",
+  "subtitle": "學得開心、記得牢——一步一題，錯了也不尷尬。",
+  "modules": [
+    {
+      "id": "01-basics",
+      "title": "基礎與工具鏈",
+      "order": 1,
+      "unitIds": [
+        "01-basics-01-python-advanced",
+        "01-basics-02-llm-api",
+        "01-basics-03-prompt-structured",
+        "01-basics-04-dev-environment"
+      ],
+      "emoji": "🧰",
+      "blurb": "先把環境與心智模型打穩，再衝框架。"
+    },
+    {
+      "id": "02-langchain",
+      "title": "LangChain 核心",
+      "order": 2,
+      "unitIds": [
+        "02-langchain-01-messages-lcel",
+        "02-langchain-02-tools",
+        "02-langchain-03-agents-basics",
+        "02-langchain-04-memory-intro"
+      ],
+      "emoji": "🦜",
+      "blurb": "Messages、Tools、Agent、記憶——主路徑 create_agent。"
+    },
+    {
+      "id": "03-rag",
+      "title": "RAG 完整流程",
+      "order": 3,
+      "unitIds": [
+        "03-rag-01-chunking",
+        "03-rag-02-embeddings",
+        "03-rag-03-vector-stores",
+        "03-rag-04-retrieval-rerank",
+        "03-rag-05-evaluation"
+      ],
+      "emoji": "📚",
+      "blurb": "切塊、嵌入、檢索、重排、評測一條龍。"
+    },
+    {
+      "id": "04-langgraph",
+      "title": "LangGraph",
+      "order": 4,
+      "unitIds": [
+        "04-langgraph-01-stategraph",
+        "04-langgraph-02-conditional-edges",
+        "04-langgraph-03-checkpoint",
+        "04-langgraph-04-hitl"
+      ],
+      "emoji": "🕸️",
+      "blurb": "狀態圖、條件邊、checkpoint、人機協作。"
+    },
+    {
+      "id": "05-fastapi-pydantic",
+      "title": "Pydantic + FastAPI",
+      "order": 5,
+      "unitIds": [
+        "05-fastapi-01-pydantic-v2",
+        "05-fastapi-02-dependencies",
+        "05-fastapi-03-agent-http"
+      ],
+      "emoji": "⚡",
+      "blurb": "驗證契約 + 依賴注入，把 Agent 變成服務。"
+    },
+    {
+      "id": "06-langsmith",
+      "title": "LangSmith",
+      "order": 6,
+      "unitIds": [
+        "06-langsmith-01-tracing",
+        "06-langsmith-02-evaluation-prompts"
+      ],
+      "emoji": "🔍",
+      "blurb": "追蹤與評估：看得到、測得了、改得動。"
+    },
+    {
+      "id": "07-advanced",
+      "title": "進階與收尾",
+      "order": 7,
+      "unitIds": [
+        "07-advanced-01-multi-agent",
+        "07-advanced-02-tools-advanced",
+        "07-advanced-03-long-term-memory",
+        "07-advanced-04-eval-deploy"
+      ],
+      "emoji": "🚀",
+      "blurb": "多代理、進階工具、長期記憶、部署閘道。"
+    },
+    {
+      "id": "projects",
+      "title": "實戰專案",
+      "order": 8,
+      "unitIds": [
+        "projects-01-rag-tools",
+        "projects-02-langgraph-workflow",
+        "projects-03-deployable-service"
+      ],
+      "emoji": "🏆",
+      "blurb": "三個專案把知識串成可跑作品。"
+    }
+  ]
+}

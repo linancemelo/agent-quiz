@@ -1,0 +1,125 @@
+{
+  "id": "06-langsmith-02-evaluation-prompts",
+  "moduleId": "06-langsmith",
+  "title": "評估與提示版本",
+  "order": 2,
+  "summary": "Dataset + evaluators；prompt 釘 commit SHA。",
+  "sourceNote": "06-langsmith/02-evaluation-and-prompts.md",
+  "tags": [
+    "evaluation",
+    "prompts",
+    "hub"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 Dataset 做回歸評估，用 push_prompt／pull_prompt 管提示版本。\n\n## 評估三件套\nDataset、Target function、Evaluators → client.evaluate(...)\n\n## 提示\n- langsmith Client push_prompt／pull_prompt\n- langchainhub 已 deprecated\n- 生產建議釘 commit SHA（tag 可移動）\n"
+  },
+  "questions": [
+    {
+      "id": "s2-1",
+      "type": "boolean",
+      "prompt": "langchainhub 套件仍是管理提示的現行主路徑。",
+      "answer": false,
+      "explanation": "langchainhub 已 deprecated，功能在 langsmith。",
+      "sourceNote": "06-langsmith/02-evaluation-and-prompts.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "s2-2",
+      "type": "single",
+      "prompt": "評估三件套不包含？",
+      "answer": "d",
+      "explanation": "三件套：Dataset、Target function、Evaluators。Random emoji generator 不是。",
+      "sourceNote": "06-langsmith/02-evaluation-and-prompts.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "Dataset"
+        },
+        {
+          "id": "b",
+          "label": "Target function"
+        },
+        {
+          "id": "c",
+          "label": "Evaluators"
+        },
+        {
+          "id": "d",
+          "label": "Random emoji generator"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "s2-3",
+      "type": "fill",
+      "prompt": "把 prompt 推上 Hub 的方法名？client.________",
+      "answer": [
+        "push_prompt"
+      ],
+      "explanation": "client.push_prompt(name, object=prompt)；pull_prompt 拉回。",
+      "sourceNote": "06-langsmith/02-evaluation-and-prompts.md",
+      "placeholder": "push_prompt",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "s2-4",
+      "type": "multi",
+      "prompt": "關於提示版本，哪些正確？",
+      "answer": [
+        "a",
+        "c"
+      ],
+      "explanation": "可用 commit hash 或 tag；生產建議釘 SHA，因 tag 可移動。只用最新不上 SHA 無法重現。",
+      "sourceNote": "06-langsmith/02-evaluation-and-prompts.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "可用 commit SHA 拉回"
+        },
+        {
+          "id": "b",
+          "label": "只用最新 tag 就一定可重現舊實驗"
+        },
+        {
+          "id": "c",
+          "label": "tag 可能被移動"
+        },
+        {
+          "id": "d",
+          "label": "必須繼續用 langchainhub"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "s2-5",
+      "type": "scenario",
+      "prompt": "Dataset 的 inputs 鍵與 target 函式不一致會？",
+      "answer": "b",
+      "explanation": "常見坑：Dataset 與 target 欄位名不一致（如 question）。",
+      "sourceNote": "06-langsmith/02-evaluation-and-prompts.md",
+      "context": "evaluate 一直 KeyError。",
+      "options": [
+        {
+          "id": "a",
+          "label": "自動改名"
+        },
+        {
+          "id": "b",
+          "label": "執行失敗或對不上欄位"
+        },
+        {
+          "id": "c",
+          "label": "分數變 100"
+        },
+        {
+          "id": "d",
+          "label": "改用 InMemoryStore"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

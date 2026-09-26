@@ -1,0 +1,127 @@
+{
+  "id": "03-rag-05-evaluation",
+  "moduleId": "03-rag",
+  "title": "RAG 評測",
+  "order": 5,
+  "summary": "Correctness／Relevance／Groundedness／Retrieval relevance。",
+  "sourceNote": "03-rag/05-evaluation.md",
+  "tags": [
+    "eval",
+    "langsmith",
+    "rag"
+  ],
+  "difficulty": "intermediate",
+  "lesson": {
+    "markdown": "## 一句話目標\n用可重複的資料集與評測指標，量「檢對了沒、答對了沒、有沒有亂掰」。\n\n## 四類評測\n1. Correctness：答案 vs 參考答案\n2. Relevance：答案 vs 問題\n3. Groundedness／Faithfulness：答案 vs 檢索文件\n4. Retrieval relevance：檢索文件 vs 問題\n\n## 重點\n- dataset + evaluate；可用 @traceable\n- LLM-as-judge 常用 with_structured_output(..., strict=True)\n"
+  },
+  "questions": [
+    {
+      "id": "r5-1",
+      "type": "multi",
+      "prompt": "官方 evaluate-rag-tutorial 列出的評測維度包含？",
+      "answer": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "explanation": "四類：Correctness、Relevance、Groundedness／Faithfulness、Retrieval relevance。",
+      "sourceNote": "03-rag/05-evaluation.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "Correctness"
+        },
+        {
+          "id": "b",
+          "label": "Relevance"
+        },
+        {
+          "id": "c",
+          "label": "Groundedness／Faithfulness"
+        },
+        {
+          "id": "d",
+          "label": "Retrieval relevance"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r5-2",
+      "type": "boolean",
+      "prompt": "只評最終文字、不看檢索，就足以判斷 RAG 改進是否有效。",
+      "answer": false,
+      "explanation": "常見坑：只評最終文字、不看檢索 → 改寫提示「看起來更好」但其實仍檢錯。",
+      "sourceNote": "03-rag/05-evaluation.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r5-3",
+      "type": "single",
+      "prompt": "Groundedness／Faithfulness 主要在量什麼？",
+      "answer": "c",
+      "explanation": "答案 vs 檢索文件（有無幻覺）。",
+      "sourceNote": "03-rag/05-evaluation.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "字型美觀"
+        },
+        {
+          "id": "b",
+          "label": "API 延遲毫秒數"
+        },
+        {
+          "id": "c",
+          "label": "答案是否忠於檢索文件"
+        },
+        {
+          "id": "d",
+          "label": "GPU 溫度"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "r5-4",
+      "type": "fill",
+      "prompt": "教學用 @________ 包住 rag_bot 讓檢索步驟可被追蹤",
+      "answer": [
+        "traceable"
+      ],
+      "explanation": "教學使用 @traceable 包住 rag_bot。",
+      "sourceNote": "03-rag/05-evaluation.md",
+      "placeholder": "traceable",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "r5-5",
+      "type": "scenario",
+      "prompt": "只有 3 題就宣稱「全面提升」。這犯了哪個坑？",
+      "answer": "a",
+      "explanation": "常見坑：只有 3 題就宣稱全面提升。需要可重複資料集與足夠樣本。",
+      "sourceNote": "03-rag/05-evaluation.md",
+      "context": "週會上的信心滿滿簡報。",
+      "options": [
+        {
+          "id": "a",
+          "label": "評估集太小就下結論"
+        },
+        {
+          "id": "b",
+          "label": "用了太多 cosine"
+        },
+        {
+          "id": "c",
+          "label": "開了 LANGSMITH_TRACING"
+        },
+        {
+          "id": "d",
+          "label": "寫了 explanation"
+        }
+      ],
+      "difficulty": "beginner"
+    }
+  ]
+}

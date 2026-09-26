@@ -1,0 +1,142 @@
+{
+  "id": "projects-03-deployable-service",
+  "moduleId": "projects",
+  "title": "專案三：可部署服務",
+  "order": 3,
+  "summary": "FastAPI + Pydantic + LangSmith：/health、/v1/run、/v1/resume。",
+  "sourceNote": "projects/03-deployable-service/README.md",
+  "tags": [
+    "project",
+    "fastapi",
+    "langsmith"
+  ],
+  "difficulty": "advanced",
+  "lesson": {
+    "markdown": "## 一句話目標\n把可暫停工作流暴露成 HTTP API，並用 LangSmith 追蹤。\n\n## 端點\n- GET /health\n- POST /v1/run（可能 interrupt）\n- POST /v1/resume（同 thread_id）\n\n## 重點\n- lifespan 建 graph；x-api-key 鑑權\n- 現行 tracing：LANGSMITH_TRACING（非舊 LANGCHAIN_TRACING_V2）\n- 多副本換 Postgres checkpointer\n"
+  },
+  "questions": [
+    {
+      "id": "p3-1",
+      "type": "single",
+      "prompt": "範例鑑權 header 是？",
+      "answer": "c",
+      "explanation": "require_key 檢查 x-api-key；呼叫示例用 x-api-key: dev-secret。",
+      "sourceNote": "projects/03-deployable-service/README.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "Authorization: Bearer only（範例唯一方式）"
+        },
+        {
+          "id": "b",
+          "label": "Cookie: session"
+        },
+        {
+          "id": "c",
+          "label": "x-api-key"
+        },
+        {
+          "id": "d",
+          "label": "X-Emoji"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p3-2",
+      "type": "boolean",
+      "prompt": "現行 tracing 應優先設 LANGCHAIN_TRACING_V2 而非 LANGSMITH_TRACING。",
+      "answer": false,
+      "explanation": "現行以 LANGSMITH_TRACING 為準；舊 LANGCHAIN_TRACING_V2 放常見坑對照。",
+      "sourceNote": "projects/03-deployable-service/README.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p3-3",
+      "type": "fill",
+      "prompt": "健康檢查路徑？",
+      "answer": [
+        "/health",
+        "health"
+      ],
+      "explanation": "驗收：/health 200。",
+      "sourceNote": "projects/03-deployable-service/README.md",
+      "placeholder": "/health",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p3-4",
+      "type": "multi",
+      "prompt": "驗收項目包含？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "/health 200、/v1/run 觸發 interrupt、/v1/resume 後 status=done。亂改 thread_id 不算驗收。",
+      "sourceNote": "projects/03-deployable-service/README.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "/health 200"
+        },
+        {
+          "id": "b",
+          "label": "/v1/run 可觸發等待核准"
+        },
+        {
+          "id": "c",
+          "label": "/v1/resume 後 status=done"
+        },
+        {
+          "id": "d",
+          "label": "每次 resume 都換 thread_id"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "p3-5",
+      "type": "scenario",
+      "prompt": "多副本 HITL 失敗，最可能？",
+      "answer": "b",
+      "explanation": "除錯：多副本 HITL 失敗 → 換 Postgres checkpointer。InMemory 在重啟／多副本黏不住。",
+      "sourceNote": "projects/03-deployable-service/README.md",
+      "context": "兩個 replica 輪流接到 resume。",
+      "options": [
+        {
+          "id": "a",
+          "label": "Pydantic 太嚴格"
+        },
+        {
+          "id": "b",
+          "label": "InMemory checkpointer 狀態不共享"
+        },
+        {
+          "id": "c",
+          "label": "題目太難"
+        },
+        {
+          "id": "d",
+          "label": "必須用 create_react_agent"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "p3-6",
+      "type": "code",
+      "prompt": "lifespan 裡應把 graph 掛在？app.state.________ = build_graph()",
+      "answer": [
+        "graph"
+      ],
+      "explanation": "範例：app.state.graph = build_graph()",
+      "sourceNote": "projects/03-deployable-service/README.md",
+      "language": "python",
+      "starter": "app.state.",
+      "match": "normalize_whitespace",
+      "runner": "string",
+      "difficulty": "beginner"
+    }
+  ]
+}

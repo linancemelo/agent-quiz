@@ -1,0 +1,126 @@
+{
+  "id": "05-fastapi-01-pydantic-v2",
+  "moduleId": "05-fastapi-pydantic",
+  "title": "Pydantic v2 模型與驗證",
+  "order": 1,
+  "summary": "model_validate／model_dump；Optional 無預設仍是 required。",
+  "sourceNote": "05-fastapi-pydantic/01-pydantic-v2-models.md",
+  "tags": [
+    "pydantic",
+    "v2",
+    "validation"
+  ],
+  "difficulty": "beginner",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 Pydantic v2 在 API／LLM 邊界做驗證與序列化。\n\n## 遷移速記\n- parse_obj → model_validate；.dict() → model_dump()\n- Config orm_mode → model_config = ConfigDict(from_attributes=True)\n- regex= → pattern=；@validator → @field_validator\n- TypeAdapter 取代 parse_obj_as\n- Optional[T] 無預設仍是 required——需 = None\n"
+  },
+  "questions": [
+    {
+      "id": "f1-1",
+      "type": "single",
+      "prompt": ".dict() 在 v2 应对應？",
+      "answer": "c",
+      "explanation": ".dict() → model_dump()；.json() → model_dump_json()。",
+      "sourceNote": "05-fastapi-pydantic/01-pydantic-v2-models.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "to_dict()"
+        },
+        {
+          "id": "b",
+          "label": "asdict()"
+        },
+        {
+          "id": "c",
+          "label": "model_dump()"
+        },
+        {
+          "id": "d",
+          "label": "export()"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "f1-2",
+      "type": "boolean",
+      "prompt": "在 v2，欄位寫成 f: Optional[str] 且沒有 = None，就會有預設值 None。",
+      "answer": false,
+      "explanation": "Optional[T] 無預設仍是 required（可為 None）——與 v1 常被當成預設 None 不同。",
+      "sourceNote": "05-fastapi-pydantic/01-pydantic-v2-models.md",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "f1-3",
+      "type": "fill",
+      "prompt": "parse_obj 的 v2 替代方法名？",
+      "answer": [
+        "model_validate"
+      ],
+      "explanation": "parse_obj → model_validate；parse_raw → model_validate_json。",
+      "sourceNote": "05-fastapi-pydantic/01-pydantic-v2-models.md",
+      "placeholder": "model_validate",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "f1-4",
+      "type": "multi",
+      "prompt": "v1 → v2 正確對應？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "regex→pattern；@validator→@field_validator；orm_mode→from_attributes。min_items 對序列改 min_length。",
+      "sourceNote": "05-fastapi-pydantic/01-pydantic-v2-models.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "regex= → pattern="
+        },
+        {
+          "id": "b",
+          "label": "@validator → @field_validator"
+        },
+        {
+          "id": "c",
+          "label": "orm_mode → from_attributes"
+        },
+        {
+          "id": "d",
+          "label": ".dict() 繼續當主路徑"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "f1-5",
+      "type": "scenario",
+      "prompt": "驗證非 BaseModel 型別（如 list[Model]），筆記建議用？",
+      "answer": "b",
+      "explanation": "TypeAdapter：驗證非 BaseModel 型別（取代已 deprecated 的 parse_obj_as）。",
+      "sourceNote": "05-fastapi-pydantic/01-pydantic-v2-models.md",
+      "context": "你有一批 AgentRequest。",
+      "options": [
+        {
+          "id": "a",
+          "label": "parse_obj_as（當新主路徑）"
+        },
+        {
+          "id": "b",
+          "label": "TypeAdapter"
+        },
+        {
+          "id": "c",
+          "label": "eval()"
+        },
+        {
+          "id": "d",
+          "label": "json.loads 後不管型別"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}

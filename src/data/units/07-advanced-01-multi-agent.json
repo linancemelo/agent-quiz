@@ -1,0 +1,125 @@
+{
+  "id": "07-advanced-01-multi-agent",
+  "moduleId": "07-advanced",
+  "title": "多代理 Subgraphs",
+  "order": 1,
+  "summary": "父圖路由、子圖專長；checkpointer 模式要選對。",
+  "sourceNote": "07-advanced/01-multi-agent.md",
+  "tags": [
+    "multi-agent",
+    "subgraphs"
+  ],
+  "difficulty": "advanced",
+  "lesson": {
+    "markdown": "## 一句話目標\n用 subgraphs 把複雜任務拆成多張子圖。\n\n## 兩種接法\n1. 節點內 subgraph.invoke + 欄位映射（schema 不同）\n2. 直接 add_node(compiled_subgraph)（共享 keys）\n\n## 子圖 checkpointer\n- None：Per-invocation（預設）\n- True：Per-thread（不支援對同一子圖並行 tool call）\n- False：Stateless，無 HITL\n"
+  },
+  "questions": [
+    {
+      "id": "a1-1",
+      "type": "single",
+      "prompt": "子圖 checkpointer=True 的限制是？",
+      "answer": "c",
+      "explanation": "Per-thread：同 thread 跨呼叫累積記憶；不支援對同一子圖並行 tool call（namespace 衝突）。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "不能有任何狀態"
+        },
+        {
+          "id": "b",
+          "label": "必須用 Pydantic state"
+        },
+        {
+          "id": "c",
+          "label": "不支援對同一子圖並行 tool call"
+        },
+        {
+          "id": "d",
+          "label": "會自動刪除父圖"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "a1-2",
+      "type": "boolean",
+      "prompt": "預設 checkpointer=None 的子圖會在同 thread 跨呼叫自動累積長期記憶。",
+      "answer": false,
+      "explanation": "Per-invocation（預設 None）：每次呼叫新鮮。期望子代理記住上次需 per-thread。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "a1-3",
+      "type": "fill",
+      "prompt": "從子圖跳回父圖節點：graph=Command.________",
+      "answer": [
+        "PARENT"
+      ],
+      "explanation": "Command(goto=..., graph=Command.PARENT)；共享 key 在父圖要有 reducer。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "placeholder": "PARENT",
+      "difficulty": "advanced"
+    },
+    {
+      "id": "a1-4",
+      "type": "multi",
+      "prompt": "多代理常見坑？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "per-thread 並行衝突、期望預設記住上次、共享 messages 污染、tool 裡呼叫子圖可視化受限。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "per-thread 子圖被並行呼叫"
+        },
+        {
+          "id": "b",
+          "label": "共享 messages 卻假設私有史"
+        },
+        {
+          "id": "c",
+          "label": "期望預設 per-invocation 記住上次"
+        },
+        {
+          "id": "d",
+          "label": "父圖有 checkpointer（這是建議）"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "a1-5",
+      "type": "scenario",
+      "prompt": "父／子 schema 不同時，官方建議？",
+      "answer": "a",
+      "explanation": "不同 schema → 在節點裡 subgraph.invoke(...) 並做欄位映射。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "context": "ResearchState 與 SupervisorState 欄位不同。",
+      "options": [
+        {
+          "id": "a",
+          "label": "wrapper 節點映射後再 invoke 子圖"
+        },
+        {
+          "id": "b",
+          "label": "硬 add_node 不管 keys"
+        },
+        {
+          "id": "c",
+          "label": "拿掉所有 TypedDict"
+        },
+        {
+          "id": "d",
+          "label": "只用字串拼接狀態"
+        }
+      ],
+      "difficulty": "intermediate"
+    }
+  ]
+}
