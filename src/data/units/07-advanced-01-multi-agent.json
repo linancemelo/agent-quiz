@@ -11,7 +11,7 @@
   ],
   "difficulty": "advanced",
   "lesson": {
-    "markdown": "## 一句話目標\n用 subgraphs 把複雜任務拆成多張子圖。\n\n## 兩種接法\n1. 節點內 subgraph.invoke + 欄位映射（schema 不同）\n2. 直接 add_node(compiled_subgraph)（共享 keys）\n\n## 子圖 checkpointer\n- None：Per-invocation（預設）\n- True：Per-thread（不支援對同一子圖並行 tool call）\n- False：Stateless，無 HITL\n"
+    "markdown": "## 一句話目標\n用 subgraphs 把複雜任務拆成多張子圖：父圖路由／監督，子圖當專家。\n\n## 兩種接法\n1. 節點內 subgraph.invoke + 欄位映射（schema 不同）\n2. 直接 add_node(compiled_subgraph)（共享 keys，例如 MessagesState）\n\n## 其他接法\n- 子代理包成 tool 給外層 agent 呼叫（handoff）\n- 監督者可串 research → critique 等多段專長\n\n## 子圖 checkpointer\n- None：Per-invocation（預設）\n- True：Per-thread（不支援對同一子圖並行 tool call）\n- False：Stateless，無 HITL\n- 父圖必須有 checkpointer，子圖 interrupt／get_state(..., subgraphs=True) 才完整\n"
   },
   "questions": [
     {
@@ -120,6 +120,106 @@
         }
       ],
       "difficulty": "intermediate"
+    },
+    {
+      "id": "a1-6",
+      "type": "scenario",
+      "prompt": "監督者要把「研究 → 審查」拆成兩段專長，筆記練習題怎麼做？",
+      "answer": "a",
+      "explanation": "練習題 1：加第二個子圖 critique，監督者串 research → critique。專長分離，父圖負責路由。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "context": "單一巨型 prompt 難維護；父圖監督、子圖當專家。",
+      "options": [
+        {
+          "id": "a",
+          "label": "加 critique 子圖，監督者串 research → critique"
+        },
+        {
+          "id": "b",
+          "label": "兩段塞進同一個巨型 prompt"
+        },
+        {
+          "id": "c",
+          "label": "刪掉 research 只留 critique"
+        },
+        {
+          "id": "d",
+          "label": "改成單節點 while True"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "a1-7",
+      "type": "single",
+      "prompt": "父／子共享 state keys（例如 MessagesState）時，怎麼掛子圖？",
+      "answer": "b",
+      "explanation": "共享 keys 時可直接 add_node(compiled_subgraph)；不同 schema 才用 wrapper 節點映射後 invoke。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "一定要在節點裡手動欄位映射"
+        },
+        {
+          "id": "b",
+          "label": "直接 add_node(編譯後子圖)"
+        },
+        {
+          "id": "c",
+          "label": "只能包成 HTTP 微服務"
+        },
+        {
+          "id": "d",
+          "label": "強制 checkpointer=False"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "a1-8",
+      "type": "boolean",
+      "prompt": "把子代理包成 tool 給外層 agent 呼叫，是筆記提到的常見接法之一。",
+      "answer": true,
+      "explanation": "也常見「子代理包成 tool」給外層 agent 呼叫（官方 subgraphs 頁有果蔬專家範例）。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "difficulty": "beginner"
+    },
+    {
+      "id": "a1-9",
+      "type": "single",
+      "prompt": "想讓子圖 interrupt／get_state(..., subgraphs=True) 完整可用，前提是？",
+      "answer": "c",
+      "explanation": "父圖必須有 checkpointer，子圖 interrupt／get_state(..., subgraphs=True) 才完整。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "子圖一定要 Stateless"
+        },
+        {
+          "id": "b",
+          "label": "父圖不能有任何 checkpointer"
+        },
+        {
+          "id": "c",
+          "label": "父圖必須有 checkpointer"
+        },
+        {
+          "id": "d",
+          "label": "只能用 Pydantic BaseModel"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "a1-10",
+      "type": "boolean",
+      "prompt": "在 tool 閉包裡呼叫子圖時，get_state(..., subgraphs=True) 一定看得到該子圖。",
+      "answer": false,
+      "explanation": "在 tool 閉包呼叫子圖時，靜態發現可能失敗 → get_state(..., subgraphs=True) 不一定看得到；interrupt 仍會往上冒。",
+      "sourceNote": "07-advanced/01-multi-agent.md",
+      "difficulty": "advanced"
     }
   ]
 }

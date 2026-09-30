@@ -86,10 +86,11 @@
         "07-advanced-01-multi-agent",
         "07-advanced-02-tools-advanced",
         "07-advanced-03-long-term-memory",
-        "07-advanced-04-eval-deploy"
+        "07-advanced-04-eval-deploy",
+        "07-advanced-05-mcp"
       ],
       "emoji": "🚀",
-      "blurb": "多代理、進階工具、長期記憶、部署閘道。"
+      "blurb": "多代理、進階工具、長期記憶、部署閘道、MCP。"
     },
     {
       "id": "projects",
