@@ -47,7 +47,7 @@ export function Layout() {
         <Outlet />
       </main>
       <footer className="no-print border-t border-border/40 py-4 text-center text-xs text-muted-foreground">
-        題庫來源：Agent 速成班筆記 · 純前端判題 · 進度存在你的瀏覽器 · v1.3.1 ✨
+        題庫來源：Agent 速成班筆記 · 純前端判題 · 進度存在你的瀏覽器 · v1.3.2 ✨
       </footer>
     </div>
   )
