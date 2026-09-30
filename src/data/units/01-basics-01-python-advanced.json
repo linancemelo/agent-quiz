@@ -3,7 +3,7 @@
   "moduleId": "01-basics",
   "title": "Python 進階要點",
   "order": 1,
-  "summary": "typing、async、Pydantic Field——Agent 工程的基本功。",
+  "summary": "typing、async、Pydantic Field——含兩題在瀏覽器裡真的跑得起來的 Python。",
   "sourceNote": "01-basics/01-python-advanced.md",
   "tags": [
     "python",
@@ -12,7 +12,7 @@
   ],
   "difficulty": "beginner",
   "lesson": {
-    "markdown": "## 一句話目標\n把 typing、async、資料模型與錯誤處理練到能讀寫現代 LangChain／FastAPI 程式碼。\n\n## 為何需要\n- LangChain Tools 靠 **type hints** 產生 JSON schema 給模型。\n- FastAPI／Pydantic 用同一套模型做請求驗證。\n- 向量庫、HTTP、LLM API 幾乎都是 IO 密集 → async 提升吞吐。\n\n## 官方重點速記\n- `Field(description=..., ge=...)` 同時進 JSON Schema 與執行期驗證。\n- 模型屬性用 `from pydantic import Field`（不是從 fastapi）。\n- V2 預設不會驗證 default；要驗證需 `validate_default=True`。\n- 嚴格 structured output 下，隨意 `dict[str, Any]` 常被拒。\n\n## 常見坑\n1. Tool 參數沒寫 type hint → schema 爛。\n2. async 路徑裡跑同步 `requests` → 卡死 event loop。\n3. API key 寫進程式碼或 commit 進 git。\n"
+    "markdown": "## 一句話目標\n把 typing、async、資料模型與錯誤處理練到能讀寫現代 LangChain／FastAPI 程式碼。\n\n## 為何需要\n- LangChain Tools 靠 **type hints** 產生 JSON schema 給模型。\n- FastAPI／Pydantic 用同一套模型做請求驗證。\n- 向量庫、HTTP、LLM API 幾乎都是 IO 密集 → async 提升吞吐。\n\n## 官方重點速記\n- `Field(description=..., ge=...)` 同時進 JSON Schema 與執行期驗證。\n- 模型屬性用 `from pydantic import Field`（不是從 fastapi）。\n- V2 預設不會驗證 default；要驗證需 `validate_default=True`。\n- 嚴格 structured output 下，隨意 `dict[str, Any]` 常被拒。\n\n## 常見坑\n1. Tool 參數沒寫 type hint → schema 爛。\n2. async 路徑裡跑同步 `requests` → 卡死 event loop。\n3. API key 寫進程式碼或 commit 進 git。\n\n## 動手寫\n最後兩題不是對答案字串，而是在瀏覽器裡真的跑 Python。寫函式、按「跑跑看」看輸出，再提交讓隱藏測試計分。\n"
   },
   "questions": [
     {
@@ -135,6 +135,69 @@
       "explanation": "官方重點：V2 預設不會驗證 default；要驗證需 `validate_default=True`。",
       "sourceNote": "01-basics/01-python-advanced.md",
       "difficulty": "intermediate"
+    },
+    {
+      "id": "b1-7",
+      "type": "code",
+      "language": "python",
+      "runner": "pyodide",
+      "prompt": "寫一個函式 field_import()，回傳模型屬性 Field 的正確匯入敘述（一整行字串）。筆記說：從 pydantic 匯入，不是 fastapi。",
+      "starter": "def field_import() -> str:\n    \"\"\"回傳 Field 的正確 import 那一行。\"\"\"\n    return \"\"\n",
+      "publicHint": "函式名稱要叫 field_import。回傳完整的一行 import，前後空白沒關係。",
+      "timeout": 8000,
+      "tests": [
+        {
+          "kind": "return",
+          "name": "正確的 import 行",
+          "expr": "field_import().strip()",
+          "expected": "from pydantic import Field"
+        },
+        "assert 'fastapi' not in field_import(), 'Field 不是從 fastapi 匯入'"
+      ],
+      "explanation": "官方重點：模型屬性用 `from pydantic import Field`（不是從 fastapi 匯入）。Query／Path／Body 才是 FastAPI 的。",
+      "sourceNote": "01-basics/01-python-advanced.md",
+      "difficulty": "beginner",
+      "tags": ["pydantic", "python"]
+    },
+    {
+      "id": "b1-8",
+      "type": "code",
+      "language": "python",
+      "runner": "pyodide",
+      "prompt": "寫函式 pick_http_client(in_async)。async 路徑（in_async 為 True）回傳 httpx，並印出一行 client=httpx；同步路徑回傳 requests，並印出 client=requests。這就是筆記裡的坑：async 裡不要直接跑同步 requests。",
+      "starter": "def pick_http_client(in_async: bool) -> str:\n    \"\"\"async 用 httpx，否則用 requests，並印出 client=<套件名>。\"\"\"\n    raise NotImplementedError\n",
+      "publicHint": "回傳套件名 httpx 或 requests，並用 print 印出 client=套件名，不要多餘空白。",
+      "timeout": 8000,
+      "tests": [
+        {
+          "kind": "return",
+          "name": "async 路徑回傳 httpx",
+          "expr": "pick_http_client(True)",
+          "expected": "httpx"
+        },
+        {
+          "kind": "return",
+          "name": "同步路徑回傳 requests",
+          "expr": "pick_http_client(False)",
+          "expected": "requests"
+        },
+        {
+          "kind": "stdout",
+          "name": "async 時印出 client=httpx",
+          "code": "pick_http_client(True)",
+          "expected": "client=httpx"
+        },
+        {
+          "kind": "stdout",
+          "name": "同步時印出 client=requests",
+          "code": "pick_http_client(False)",
+          "expected": "client=requests"
+        }
+      ],
+      "explanation": "常見坑：在 async 路徑直接跑同步 requests 會卡死 event loop，應改 httpx（例如 httpx.AsyncClient）。同步路徑才用 requests。",
+      "sourceNote": "01-basics/01-python-advanced.md",
+      "difficulty": "beginner",
+      "tags": ["async", "httpx", "python"]
     }
   ]
 }

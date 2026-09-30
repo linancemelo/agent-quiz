@@ -69,6 +69,11 @@ export function FeedbackPanel({
             <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
             <p className="leading-relaxed text-foreground/90">{result.explanation}</p>
           </div>
+          {result.detail && (
+            <pre className="max-h-52 overflow-auto whitespace-pre-wrap rounded-xl border border-border/60 bg-black/30 p-3 font-mono text-xs leading-relaxed text-foreground/90">
+              {result.detail}
+            </pre>
+          )}
           {expectedText && (
             <div className="flex gap-2 rounded-xl border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-sm">
               <BookMarked className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />

@@ -48,7 +48,8 @@ export interface ScenarioQuestion extends BaseQuestion {
   answer: string
 }
 
-export interface CodeQuestion extends BaseQuestion {
+/** Existing questions: grade by normalized source text, not execution. */
+export interface StringCodeQuestion extends BaseQuestion {
   type: 'code'
   language: string
   starter?: string
@@ -56,6 +57,56 @@ export interface CodeQuestion extends BaseQuestion {
   match: 'normalize_whitespace'
   runner: 'string'
 }
+
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue }
+
+/** Python statements. A raised AssertionError (or any exception) fails the case. */
+export interface PyodideAssertTest {
+  kind: 'assert'
+  code: string
+  name?: string
+}
+
+/** Evaluate `expr` after the learner's code and compare with Python `==`. */
+export interface PyodideReturnTest {
+  kind: 'return'
+  expr: string
+  /** JSON value. Compared after `json.loads` so lists stay lists (not tuples). */
+  expected: JsonValue
+  name?: string
+}
+
+/** Run `code` and compare stdout. One trailing newline on either side is ignored. */
+export interface PyodideStdoutTest {
+  kind: 'stdout'
+  code: string
+  expected: string
+  name?: string
+}
+
+/** A bare string is an assert snippet (`kind: 'assert'`). */
+export type PyodideTest = string | PyodideAssertTest | PyodideReturnTest | PyodideStdoutTest
+
+/** Run learner Python in the browser and grade with hidden tests. */
+export interface PyodideCodeQuestion extends BaseQuestion {
+  type: 'code'
+  language: string
+  runner: 'pyodide'
+  starter?: string
+  tests: PyodideTest[]
+  /** Per-run limit in milliseconds. Default 8000. Clamped to 500–30000. */
+  timeout?: number
+  /** Shown before submit. Hidden tests are not. */
+  publicHint?: string
+}
+
+export type CodeQuestion = StringCodeQuestion | PyodideCodeQuestion
 
 export type Question =
   | SingleQuestion
@@ -107,6 +158,8 @@ export interface GradeResult {
   correct: boolean
   expected: UserAnswer
   explanation: string
+  /** Runtime feedback (Pyodide stdout / hidden-test report). */
+  detail?: string
 }
 
 export interface QuestionAttempt {

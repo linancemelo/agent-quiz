@@ -1,5 +1,16 @@
 import type { GradeResult, Question, UserAnswer } from '@/types'
 
+export async function gradeQuestionAsync(
+  q: Question,
+  userAnswer: UserAnswer,
+): Promise<GradeResult> {
+  if (q.type === 'code' && q.runner === 'pyodide') {
+    const { gradeWithPyodide } = await import('@/lib/pyodide/gradeWithPyodide')
+    return gradeWithPyodide(q, userAnswer)
+  }
+  return gradeQuestion(q, userAnswer)
+}
+
 function normalizeWs(s: string): string {
   return s.trim().replace(/\s+/g, ' ')
 }
@@ -40,6 +51,9 @@ export function gradeQuestion(q: Question, userAnswer: UserAnswer): GradeResult 
       return { correct: ok, expected: q.answer, explanation }
     }
     case 'code': {
+      if (q.runner === 'pyodide') {
+        throw new Error('Pyodide 題要走 gradeQuestionAsync')
+      }
       if (typeof userAnswer !== 'string') {
         return { correct: false, expected: q.answer, explanation }
       }

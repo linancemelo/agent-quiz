@@ -1,9 +1,12 @@
+import { lazy, Suspense } from 'react'
 import type { Question, UserAnswer } from '@/types'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+
+const PythonCodeEditor = lazy(() => import('@/components/PythonCodeEditor').then((m) => ({ default: m.PythonCodeEditor })))
 
 const typeLabel: Record<string, string> = {
   single: '單選',
@@ -33,16 +36,21 @@ export function QuestionCard({
   answer,
   onChange,
   disabled,
+  grading,
 }: {
   question: Question
   answer: UserAnswer
   onChange: (a: UserAnswer) => void
   disabled?: boolean
+  grading?: boolean
 }) {
   return (
     <div className="space-y-4 animate-pop">
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant="fun">{typeLabel[question.type] ?? question.type}</Badge>
+        {question.type === 'code' && question.runner === 'pyodide' && (
+          <Badge variant="success">瀏覽器執行</Badge>
+        )}
         {question.difficulty && (
           <Badge variant="secondary">
             {question.difficulty === 'beginner'
@@ -157,7 +165,23 @@ export function QuestionCard({
         />
       )}
 
-      {question.type === 'code' && (
+      {question.type === 'code' && question.runner === 'pyodide' && (
+        <Suspense
+          fallback={
+            <p className="text-sm text-muted-foreground">程式編輯器準備中…</p>
+          }
+        >
+          <PythonCodeEditor
+            question={question}
+            code={typeof answer === 'string' ? answer : (question.starter ?? '')}
+            onChange={(next) => onChange(next)}
+            disabled={disabled}
+            grading={grading}
+          />
+        </Suspense>
+      )}
+
+      {question.type === 'code' && question.runner !== 'pyodide' && (
         <div className="space-y-2">
           {question.starter && (
             <pre className="overflow-x-auto rounded-xl bg-black/40 p-3 text-xs text-cyan-200">

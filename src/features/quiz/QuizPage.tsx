@@ -16,8 +16,9 @@ import { FeedbackPanel } from '@/components/FeedbackPanel'
 import { ProgressBar } from '@/components/ProgressBar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { ArrowLeft, Send, ChevronRight } from 'lucide-react'
+import { ArrowLeft, Send, ChevronRight, Loader2 } from 'lucide-react'
 import type { Question, UserAnswer } from '@/types'
+import { cn } from '@/lib/utils'
 
 function resolveMode(raw: string | null): QuizMode {
   if (raw === 'attempt') return 'attempt'
@@ -69,6 +70,8 @@ export function QuizPage() {
   const submitted = useQuizStore((s) => s.submitted)
   const finished = useQuizStore((s) => s.finished)
   const streak = useQuizStore((s) => s.streak)
+  const grading = useQuizStore((s) => s.grading)
+  const submitError = useQuizStore((s) => s.submitError)
   const setAnswer = useQuizStore((s) => s.setAnswer)
   const submitCurrent = useQuizStore((s) => s.submitCurrent)
   const next = useQuizStore((s) => s.next)
@@ -191,6 +194,7 @@ export function QuizPage() {
     const onKey = (e: KeyboardEvent) => {
       if (isTypingTarget(e.target)) return
       if (finished) return
+      if (useQuizStore.getState().grading) return
       const q = useQuizStore.getState().currentQuestion()
       if (!q) return
 
@@ -301,7 +305,12 @@ export function QuizPage() {
       : undefined
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5 animate-slide-up">
+    <div
+      className={cn(
+        'mx-auto space-y-5 animate-slide-up',
+        q.type === 'code' && q.runner === 'pyodide' ? 'max-w-3xl' : 'max-w-2xl',
+      )}
+    >
       <div className="flex items-center justify-between gap-2">
         <Button variant="ghost" size="sm" type="button" onClick={handleLeave}>
           <ArrowLeft className="h-4 w-4" />
@@ -321,21 +330,32 @@ export function QuizPage() {
             answer={answer}
             onChange={setAnswer}
             disabled={isSubmitted}
+            grading={grading}
           />
 
           {grade && (
             <FeedbackPanel result={grade} options={choiceOptions} streak={streak} />
           )}
 
+          {submitError && (
+            <p role="alert" className="rounded-xl border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-100">
+              {submitError}
+            </p>
+          )}
+
           <div className="flex justify-end gap-2">
             {!isSubmitted ? (
               <Button
                 size="lg"
-                disabled={isAnswerEmpty(q, answer)}
-                onClick={() => submitCurrent()}
+                disabled={isAnswerEmpty(q, answer) || grading}
+                onClick={() => void submitCurrent()}
               >
-                <Send className="h-4 w-4" />
-                提交看看
+                {grading && q.type === 'code' && q.runner === 'pyodide' ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
+                {grading && q.type === 'code' && q.runner === 'pyodide' ? '小蟒蛇判題中…' : '提交看看'}
               </Button>
             ) : (
               <Button size="lg" variant="success" onClick={() => next()}>
