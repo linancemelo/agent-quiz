@@ -1,0 +1,230 @@
+{
+  "id": "07-advanced-05-mcp",
+  "moduleId": "07-advanced",
+  "title": "MCP（Model Context Protocol）",
+  "order": 5,
+  "summary": "AI 的 USB-C：跨行程協定、Host／Client／Server、Tools／Resources／Prompts。",
+  "sourceNote": "07-advanced/05-mcp.md",
+  "tags": [
+    "mcp",
+    "tools",
+    "protocol"
+  ],
+  "difficulty": "advanced",
+  "lesson": {
+    "markdown": "## 一句話目標\nMCP 是開放協定，把 Host（Claude Desktop、Cursor、自家 Agent）接到外部系統——官方比喻「AI 的 USB-C」：寫一次 Server，多個 Client／Host 都能接。\n\n## 與 in-process Tools 差在哪\n- LangChain／LangGraph Tools：同一行程函式／物件\n- MCP：跨行程／跨網路 JSON-RPC（stdio 或 Streamable HTTP）\n- 可並存：Server → Adapter → LangChain Tool → create_agent\n\n## 三角色與三大原語\n- Host → 為每個 Server 建 Client → Server 提供 context\n- Tools（偏模型決定）／Resources（偏應用決定）／Prompts（偏使用者觸發）\n\n## 現行重點\n- Spec `2026-07-28`（Modern，無 session）\n- Python：`pip install \"mcp[cli]\"`，高階類別 `MCPServer`\n- Host：Claude Desktop `mcpServers`、Cursor `mcp.json`、LangChain `MCPAdapter`（beta，主打 tools）\n"
+  },
+  "questions": [
+    {
+      "id": "mcp-1",
+      "type": "single",
+      "prompt": "官方把 MCP 比喻成什麼？它主要解決什麼問題？",
+      "answer": "b",
+      "explanation": "官方比喻是「AI 的 USB-C」——寫一次 Server，多個 Client／Host 都能接。它標準化地把工具、資料與提示模板交給 LLM 應用，不是規定怎麼呼叫 LLM。",
+      "sourceNote": "07-advanced/05-mcp.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "AI 的 HDMI——專門傳影音給模型"
+        },
+        {
+          "id": "b",
+          "label": "AI 的 USB-C——寫一次 Server，多個 Host 都能接"
+        },
+        {
+          "id": "c",
+          "label": "AI 的 Wi‑Fi——只負責遠端模型選型"
+        },
+        {
+          "id": "d",
+          "label": "AI 的電源線——強制規定 Agent 迴圈怎麼跑"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "mcp-2",
+      "type": "multi",
+      "prompt": "和一般 in-process LangChain／LangGraph Tools 相比，MCP 的差異包含？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "MCP 是跨行程／跨網路的 JSON-RPC 協定；用 tools/list 等 discovery；同一 Server 可被多個 Host 共用；傳輸是 stdio 或 Streamable HTTP。in-process Tools 是同一行程內函式呼叫。",
+      "sourceNote": "07-advanced/05-mcp.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "本質是跨行程／跨網路協定（JSON-RPC）"
+        },
+        {
+          "id": "b",
+          "label": "Client 對 Server 做 tools/list 等 discovery"
+        },
+        {
+          "id": "c",
+          "label": "傳輸可用 stdio 或 Streamable HTTP"
+        },
+        {
+          "id": "d",
+          "label": "只能綁死在單一 LangChain 專案裡，無法重用"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "mcp-3",
+      "type": "single",
+      "prompt": "Architecture 三角色：Claude Desktop／Cursor 是哪個？Filesystem Server 是哪個？",
+      "answer": "c",
+      "explanation": "Host（AI 應用，協調多個連線）→ 為每個 Server 建一個 Client → Server 提供 context。VS Code／Cursor／Claude Desktop 是 Host；Filesystem、Sentry 是不同 Server。",
+      "sourceNote": "07-advanced/05-mcp.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "兩者都是 Server；Client 只存在於雲端"
+        },
+        {
+          "id": "b",
+          "label": "Claude Desktop 是 Server；Filesystem 是 Host"
+        },
+        {
+          "id": "c",
+          "label": "Claude Desktop／Cursor 是 Host；Filesystem 是 Server"
+        },
+        {
+          "id": "d",
+          "label": "只有 Client，沒有 Host／Server 之分"
+        }
+      ],
+      "difficulty": "beginner"
+    },
+    {
+      "id": "mcp-4",
+      "type": "scenario",
+      "prompt": "筆記說三大原語「誰通常驅動」——Tools／Resources／Prompts 分別偏誰？",
+      "answer": "a",
+      "explanation": "Tools：通常由模型決定何時呼叫（應用仍可核准）。Resources：偏應用決定何時塞進上下文。Prompts：偏使用者明確觸發（如 slash command）。",
+      "sourceNote": "07-advanced/05-mcp.md",
+      "context": "練習題也要求用表格寫出「誰通常觸發」（模型／應用／使用者）。",
+      "options": [
+        {
+          "id": "a",
+          "label": "Tools→模型；Resources→應用；Prompts→使用者"
+        },
+        {
+          "id": "b",
+          "label": "三者一律只能由使用者手動點擊"
+        },
+        {
+          "id": "c",
+          "label": "Tools→使用者；Resources→模型；Prompts→應用"
+        },
+        {
+          "id": "d",
+          "label": "只有 Tools 存在；Resources／Prompts 已從協定移除"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "mcp-5",
+      "type": "single",
+      "prompt": "關於現行規格與 Python SDK v2，哪一句正確？",
+      "answer": "c",
+      "explanation": "現行 Modern 規格為 `2026-07-28`（無 session）。Python：`pip install \"mcp[cli]\"`；高階 Server 類別為 `MCPServer`（v1 的 FastMCP 已改名）。",
+      "sourceNote": "07-advanced/05-mcp.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "規格仍停在 2025-11-25；類別仍叫 FastMCP"
+        },
+        {
+          "id": "b",
+          "label": "規格 2026-07-28，但必須永遠走 initialize session handshake"
+        },
+        {
+          "id": "c",
+          "label": "規格 2026-07-28（Modern）；高階類別改名 MCPServer，套件 mcp[cli]"
+        },
+        {
+          "id": "d",
+          "label": "沒有官方 Python SDK，只能手寫 JSON-RPC"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "mcp-6",
+      "type": "multi",
+      "prompt": "筆記提到的常見 Host 整合，下列哪些正確？",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "Claude Desktop：claude_desktop_config.json 的 mcpServers。Cursor：.cursor/mcp.json 或 ~/.cursor/mcp.json。LangChain：langchain[mcp]>=1.4.0（beta）用 MCPAdapter 轉成 tools 給 create_agent。",
+      "sourceNote": "07-advanced/05-mcp.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "Claude Desktop：mcpServers（command／args 啟動 stdio）"
+        },
+        {
+          "id": "b",
+          "label": "Cursor：專案 .cursor/mcp.json 或全域 ~/.cursor/mcp.json"
+        },
+        {
+          "id": "c",
+          "label": "LangChain：MCPAdapter（文件標 beta，主打 tools）"
+        },
+        {
+          "id": "d",
+          "label": "裝了 LangChain 就等於會寫 MCP Server（不必另學 SDK）"
+        }
+      ],
+      "difficulty": "intermediate"
+    },
+    {
+      "id": "mcp-7",
+      "type": "multi",
+      "prompt": "常見坑有哪些？（選出筆記有寫的）",
+      "answer": [
+        "a",
+        "b",
+        "c"
+      ],
+      "explanation": "stdio 對 stdout 印 log 會弄髒 JSON-RPC（應用 logging／stderr，不要 print）。死記 FastMCP import——v2 改為 from mcp.server import MCPServer。MCPAdapter 是 Client 端消費；寫 Server 仍用 MCP SDK。把 MCP 當又一個 LangChain Tool API 也不對。",
+      "sourceNote": "07-advanced/05-mcp.md",
+      "options": [
+        {
+          "id": "a",
+          "label": "stdio Server 對 stdout 用 print() 印 log"
+        },
+        {
+          "id": "b",
+          "label": "死記舊的 FastMCP import，沒用 MCPServer"
+        },
+        {
+          "id": "c",
+          "label": "以為裝了 LangChain／MCPAdapter 就等於會寫 MCP Server"
+        },
+        {
+          "id": "d",
+          "label": "遠端 Server 加上 bearer／OAuth（這是建議，不是坑）"
+        }
+      ],
+      "difficulty": "advanced"
+    },
+    {
+      "id": "mcp-8",
+      "type": "boolean",
+      "prompt": "LangChain 的 MCPAdapter 目前主打 tools；prompts／resources 尚未一等包裝。",
+      "answer": true,
+      "explanation": "migration 文件：MCPAdapter 主打 tools；prompts／resources 尚未一等包裝（可直接用底層 FastMCP／SDK client 讀）。langchain.mcp 標為 beta。",
+      "sourceNote": "07-advanced/05-mcp.md",
+      "difficulty": "intermediate"
+    }
+  ]
+}
